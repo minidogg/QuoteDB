@@ -1,3 +1,3 @@
-![QuoteDB logo](https://github.com/ReallyBadDeveloper/QuoteDB/blob/main/media/quotedblogo.png?raw=true)
+![QuoteDB logo](media/quotedblogo.png)
 \
 A database for storing all your quotes.
