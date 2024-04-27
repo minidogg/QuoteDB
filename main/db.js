@@ -3,8 +3,8 @@ function setup(){
     if(!fs.existsSync("../db")){
         fs.mkdirSync("../db")
     }
-    if(!fs.existsSync("../db/db.txt")){
-        fs.writeFileSync("../db/db.txt","","utf-8")
+    if(!fs.existsSync("../db/db.json")){
+        fs.writeFileSync("../db/db.json","{}","utf-8")
     }
 }
 module.exports.setup = setup
