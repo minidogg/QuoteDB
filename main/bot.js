@@ -71,7 +71,7 @@ client.once(Events.ClientReady, readyClient => {
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 });
 
-client.login(token).then(()=>{
+const refreshCommands = ()=>{
 
     client.guilds.fetch().then((guildData)=>{
         let len = guildData.size
@@ -105,4 +105,7 @@ client.login(token).then(()=>{
         
     })
 
+}
+client.login(token).then(()=>{
+    refreshCommands()
 })
