@@ -21,17 +21,22 @@ client.on("interactionCreate",(i)=>{
     i.message.delete()
 })
 
-var lastQuoteTime = 0
-var regex = /(".+" *- *<@\d+>,? *\d*)/g
+var nextQuoteTime = 0
+var regex = /(".+" *- *<@\d+>,? *\d*)/
 client.on("messageCreate",(msg)=>{
     if(!msg.channel.name.includes("quotes"))return
     if(msg.author.bot===true)return
     if(!regex.test(msg.content))return
-    msg.reply({ content: "Adding quote to DB...",components:[deleteRow], ephemeral: true });
+    if(Date.now()<=nextQuoteTime){
+        msg.reply({ content: `Please wait ${(nextQuoteTime-Date.now())/1000} more seconds before sending another quote!`,components:[deleteRow]});
+        return
+    }
+    msg.reply({ content: "Adding quote to DB...",components:[deleteRow]});
 
     try{
         let add = db.add(regex.exec(msg.content),msg.author.username,msg.author.id)
-        msg.reply({ content: add,components:[deleteRow], ephemeral: true });
+        msg.reply({ content: add,components:[deleteRow]});
+        nextQuoteTime = Date.now()+5000
     }catch(err){
         console.warn(err)
         msg.reply("Something went wrong when adding quote to DB!")
