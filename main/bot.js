@@ -1,5 +1,5 @@
 // Require the necessary discord.js classes
-const { Client, Events, GatewayIntentBits } = require('discord.js');
+const { Client, Events, GatewayIntentBits,ButtonBuilder,ActionRowBuilder,ButtonStyle } = require('discord.js');
 const { token } = require('./config.json');
 
 // Create a new client instance
@@ -8,21 +8,35 @@ const db = require("./db.js")
 db.setup()
 
 //the actual MEAT of the bot
-var lastQuote = 0
+const deleteButton = new ButtonBuilder()
+.setCustomId('delete')
+.setLabel('Delete')
+.setStyle(ButtonStyle.Danger);
+const deleteRow = new ActionRowBuilder()
+.addComponents(deleteButton);
+
+client.on("interactionCreate",(i)=>{
+    if(i.isButton()==false)return
+    if(i.component.customId!="delete")return
+    i.message.delete()
+})
+
+var lastQuoteTime = 0
 var regex = /(".+" *- *<@\d+>,? *\d*)/g
 client.on("messageCreate",(msg)=>{
     if(!msg.channel.name.includes("quotes"))return
     if(msg.author.bot===true)return
     if(!regex.test(msg.content))return
-    msg.reply("Adding quote to DB...")
+    msg.reply({ content: "Adding quote to DB...",components:[deleteRow], ephemeral: true });
+
     try{
-        msg.reply(db.add(regex.exec(msg.content),msg.author.username,msg.author.id))
+        let add = db.add(regex.exec(msg.content),msg.author.username,msg.author.id)
+        msg.reply({ content: add,components:[deleteRow], ephemeral: true });
     }catch(err){
         console.warn(err)
-        msg.reply("Something went wrong!")
+        msg.reply("Something went wrong when adding quote to DB!")
     }
 })
-
 
 
 
