@@ -37,6 +37,7 @@ client.on("messageCreate",(msg)=>{
         let add = db.add(regex.exec(msg.content)[1],msg.author.username,msg.author.id)
 
         msg.reply({ content: add,components:[deleteRow]});
+        msg.react("✅")
         nextQuoteTime = Date.now()+5000
     }catch(err){
         console.warn(err)
