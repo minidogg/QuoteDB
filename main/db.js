@@ -9,7 +9,7 @@ function setup(){
 }
 module.exports.setup = setup
 
-var quoteIdRegex = /".+" *- *<@(\d+)>,? *\d*/g
+var quoteIdRegex = /".+" *- *<@(\d+)>,? *\d*/
 module.exports.add = (quote,user,userID)=>{
     let quoteId = quoteIdRegex.exec(quote) //this is who the quote was about
     console.log(quoteId)
