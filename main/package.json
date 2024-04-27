@@ -1,0 +1,11 @@
+{
+  "name": "main",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bot.js",
+  "scripts": {
+    "test": "npm run dev"
+  },
+  "author": "",
+  "license": "ISC"
+}
