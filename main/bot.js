@@ -71,18 +71,18 @@ client.once(Events.ClientReady, readyClient => {
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 });
 
-const refreshCommands = ()=>{
+const refreshCommands = async ()=>{
 
-    client.guilds.fetch().then((guildData)=>{
+    client.guilds.fetch().then(async (guildData)=>{
         let len = guildData.size
         console.log(`Starting to refresh commands for ${len} guilds`)
         let i = 0
-        guildData.forEach((e)=>{
+        guildData.forEach(async(e)=>{
             i++
             let guildId = e.id
             console.log(`Refreshing commands for guild id: ${guildId} (${i}/${len})`)
             const rest = new REST().setToken(token);
-            (async () => {
+            await (async () => {
                 try {
                     console.log(`Started refreshing ${commands2.length} application (/) commands.`);
             
@@ -102,7 +102,7 @@ const refreshCommands = ()=>{
 
         })
 
-        
+        console.log(`Done refreshing commands for ${len} guilds.`)
     })
 
 }

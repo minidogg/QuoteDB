@@ -45,7 +45,11 @@ module.exports.add = (quote,user,userID)=>{
 module.exports.getQuotes = function(count=20){
     try{
         let db = getDB()
-        return db.quotes
+        let quotes = []
+        for(let i = 0;i<count;i++){
+            quotes.push(db.quotes[i])
+        }
+        return quotes
     }catch(err){
         console.warn(err)
         return `Something went wrong when retrieving last ${count} quotes!`
