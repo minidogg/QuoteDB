@@ -1,4 +1,5 @@
 const { SlashCommandBuilder,Interaction } = require('discord.js');
+const lazyEmbed = require("../lazyEmbed.js")
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -9,6 +10,9 @@ module.exports = {
          * @param {Interaction} interaction 
          */
 	async execute(interaction) {
-		await interaction.reply({content:`Server has been up for ${process.uptime()} seconds`,ephemeral:true});
+        await interaction.reply({embeds:[lazyEmbed({
+            "title":"Ping",
+            "message":`Server has been up for ${process.uptime()} seconds`
+        })],ephemeral:true});
 	},
 };
