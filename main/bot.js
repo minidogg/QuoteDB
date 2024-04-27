@@ -3,14 +3,23 @@ const { Client, Events, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
 
 // Create a new client instance
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent] });
 
-// When the client is ready, run this code (only once).
-// The distinction between `client: Client<boolean>` and `readyClient: Client<true>` is important for TypeScript developers.
-// It makes some properties non-nullable.
+
+//the actual MEAT of the bot
+client.on("messageCreate",(msg)=>{
+    if(!msg.channel.name.includes("quotes"))return
+    if(msg.author.bot===true)return
+    if(!/".+" *- *<@\d+>,? *\d*/g.test(msg.content))return
+    msg.reply("Adding quote to DB...")
+})
+
+
+
+
+//log in the bot
 client.once(Events.ClientReady, readyClient => {
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 });
 
-// Log in to Discord with your client's token
 client.login(token);
