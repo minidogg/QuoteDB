@@ -34,7 +34,8 @@ client.on("messageCreate",(msg)=>{
     msg.reply({ content: "Adding quote to DB...",components:[deleteRow]});
 
     try{
-        let add = db.add(regex.exec(msg.content),msg.author.username,msg.author.id)
+        let add = db.add(regex.exec(msg.content)[1],msg.author.username,msg.author.id)
+
         msg.reply({ content: add,components:[deleteRow]});
         nextQuoteTime = Date.now()+5000
     }catch(err){
