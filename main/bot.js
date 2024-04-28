@@ -151,8 +151,9 @@ client.on("interactionCreate",async(i)=>{
 
 //commands
 var commands = {}
+var jsRegex = /^.*\.js$/
 fs.readdirSync("./commands").forEach((file)=>{
-    
+    if(!jsRegex.test(file))return
     let rq = require(path.resolve("./commands/"+file))
     commands[rq.data.name] = rq
 })
