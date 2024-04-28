@@ -12,7 +12,7 @@ function setup(){
         fs.mkdirSync("../db")
     }
     if(!fs.existsSync("../db/db.json")){
-        fs.writeFileSync("../db/db.json","{quotes:[]}","utf-8")
+        fs.writeFileSync("../db/db.json",JSON.stringify({'quotes':[]}),"utf-8")
     }
     let db = getDB()
     if(typeof(db.quotes)==="undefined"){
@@ -20,9 +20,10 @@ function setup(){
         setDB(db)
     }
 }
-module.exports.setup = setup
+setup()
 
 var quoteIdRegex = /".+" *- *<@(\d+)>,? *\d*/
+
 
 var db = getDB()
 setInterval(()=>{

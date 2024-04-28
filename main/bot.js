@@ -9,7 +9,6 @@ const config = require("./config.json")
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent] });
 const db = require("./db.js")
-db.setup()
 
 //the actual MEAT of the bot
 const deleteButton = new ButtonBuilder()
