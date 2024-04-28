@@ -23,7 +23,7 @@ module.exports = {
 	async execute(interaction) {
         switch(interaction.options._subcommand){
             case("last"):
-                var quotes = db.getQuotes().map(e=>e.quote).join("\n")
+                var quotes = db.getQuotes().map(e=>e.quote+` (@<${e.reporterId}>)`).join("\n")
 
                 await interaction.reply({embeds:[lazyEmbed({
                     "title":"Quotes",
@@ -38,7 +38,7 @@ module.exports = {
                     interaction.reply("Invalid user/userID!")
                     return
                 }
-                var quotes = db.getQuotesOf(id).map(e=>e.quote).join("\n")
+                var quotes = db.getQuotesOf(id).map(e=>e.quote+` (@<${e.reporterId}>)`).join("\n")
 
                 await interaction.reply({embeds:[lazyEmbed({
                     "title":"Quotes",
