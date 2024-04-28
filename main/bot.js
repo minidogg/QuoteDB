@@ -235,10 +235,7 @@ async function refreshGuilds(){
     })
 }
 function sendStatus(){
-    client.guilds.fetch().then(async (guildData)=>{
-        console.log(guildData)
-        guildData.channels.cache.find((e)=>e.name.includes("quotes")).send(content)
-    })
+    if(clientId!=="1233861877365346334")return
 }
 
 client.on("guildCreate",(e)=>{
@@ -249,7 +246,7 @@ client.on("guildCreate",(e)=>{
 client.login(token).then(async()=>{
     await refreshCommands()
     await refreshGuilds()
-    // sendStatus()
+    sendStatus()
 
     express()//runs ./express/index.js
 })
