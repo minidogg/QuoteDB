@@ -5,16 +5,17 @@
   "main": "bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "bot":"nodemon bot.js",
-    "dev":"nodemon bot.js",
-    "prod":"pm2 start bot.js",
-    "prodStop":"pm2 stop bot.js",
-    "prodLogs":"pm2 logs"
+    "bot": "nodemon bot.js",
+    "dev": "nodemon bot.js",
+    "prod": "pm2 start bot.js",
+    "prodStop": "pm2 stop bot.js",
+    "prodLogs": "pm2 logs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^14.14.1"
+    "discord.js": "^14.14.1",
+    "express": "^4.19.2"
   }
 }

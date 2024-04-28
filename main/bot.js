@@ -24,6 +24,7 @@ const { Client, Events, GatewayIntentBits,ButtonBuilder,ActionRowBuilder,ButtonS
 const { token,clientId } = require('./config.json');
 const config = require("./config.json")
 const added = typeof(config.host)==="string"&&config.host!==" "?` (Being hosted by ${config.host})`:""
+const express = require("./express/index.js")
 
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent] });
@@ -164,60 +165,71 @@ client.once(Events.ClientReady, readyClient => {
 });
 
 const refreshCommandI = async({e,i,len})=>{
-    let guildId = e.id
-    console.log(`Refreshing commands for guild: ${guildId} (${e.name}) (${i}/${len})`)
-    const rest = new REST().setToken(token);
-    await (async () => {
-        try {
-            console.log(`Started refreshing ${commands2.length} application (/) commands.`);
-    
-            // The put method is used to fully refresh all commands in the guild with the current set
-            const data = await rest.put(
-                Routes.applicationGuildCommands(clientId, guildId),
-                { body: commands2 },
-            );
-    
-            console.log(`Successfully reloaded ${data.length} application (/) commands.`);
-        } catch (error) {
-            // And of course, make sure you catch and log any errors!
-            console.error(error);
-        }
-    })();
-    console.log(`Done refreshing commands for guild: ${guildId} (${e.name}) (${i}/${len})`)
+    return new Promise(async(r)=>{
+        let guildId = e.id
+        console.log(`Refreshing commands for guild: ${guildId} (${e.name}) (${i}/${len})`)
+        const rest = new REST().setToken(token);
+        await (async () => {
+            try {
+                console.log(`Started refreshing ${commands2.length} application (/) commands.`);
+        
+                // The put method is used to fully refresh all commands in the guild with the current set
+                const data = await rest.put(
+                    Routes.applicationGuildCommands(clientId, guildId),
+                    { body: commands2 },
+                );
+        
+                console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+            } catch (error) {
+                // And of course, make sure you catch and log any errors!
+                console.error(error);
+            }
+        })();
+        console.log(`Done refreshing commands for guild: ${guildId} (${e.name}) (${i}/${len})`)
+        r()
+    })
 
 }
 const refreshCommands = async ()=>{
 
-    client.guilds.fetch().then(async (guildData)=>{
-        let len = guildData.size
+    return new Promise(async(r)=>{
+        client.guilds.fetch().then(async (guildData)=>{
+            let len = guildData.size
+    
+            console.log(`Starting to refresh commands for ${len} guilds`)
+            let i = 0
+            guildData.forEach(async(e)=>{
+                i++
+                await refreshCommandI({e,i,len})
+    
+            })
+    
+            console.log(`Done refreshing commands for ${len} guilds.`)
 
-        console.log(`Starting to refresh commands for ${len} guilds`)
-        let i = 0
-        guildData.forEach(async(e)=>{
-            i++
-            await refreshCommandI({e,i,len})
-
+            r()
         })
-
-        console.log(`Done refreshing commands for ${len} guilds.`)
     })
 
+
 }
-function refreshGuilds(){
-    client.guilds.fetch().then(async (guildData)=>{
-        let len = guildData.size
-        console.log(`Starting to refresh DB folder for ${len} guilds`)
-        let i = 0
-        guildData.forEach(async(e)=>{
-            i++
-            let guildId = e.id
-            console.log(`Refreshing folder for guild: ${guildId} (${e.name}) (${i}/${len})`)
-            db.createGuild(e.id)
-            console.log(`Done refreshing folder for guild: ${guildId} (${e.name}) (${i}/${len})`)
-
+async function refreshGuilds(){
+    return new Promise(async(r)=>{
+        client.guilds.fetch().then(async (guildData)=>{
+            let len = guildData.size
+            console.log(`Starting to refresh DB folder for ${len} guilds`)
+            let i = 0
+            guildData.forEach(async(e)=>{
+                i++
+                let guildId = e.id
+                console.log(`Refreshing folder for guild: ${guildId} (${e.name}) (${i}/${len})`)
+                db.createGuild(e.id)
+                console.log(`Done refreshing folder for guild: ${guildId} (${e.name}) (${i}/${len})`)
+    
+            })
+    
+            console.log(`Done refreshing DB folder for ${len} guilds.`)
+            r()
         })
-
-        console.log(`Done refreshing DB folder for ${len} guilds.`)
     })
 }
 function sendStatus(){
@@ -232,8 +244,10 @@ client.on("guildCreate",(e)=>{
     db.createGuild(e.id)
 })
 
-client.login(token).then(()=>{
-    refreshCommands()
-    refreshGuilds()
+client.login(token).then(async()=>{
+    await refreshCommands()
+    await refreshGuilds()
     // sendStatus()
+
+    express()//runs ./express/index.js
 })
