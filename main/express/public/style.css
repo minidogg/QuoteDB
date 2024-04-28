@@ -1,0 +1,26 @@
+*{
+    font-family:'Comic Sans MS','Comic Sans','Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+body{
+    background-color: rgb(122, 0, 126);
+}
+.logo{
+    width:20vw;
+    display:block;
+    margin:auto;
+    /* background-color: rgba(0,0,0,0.2); */
+    padding:3vmin;
+    border-radius: 5vmin;
+    padding-left: 10vw;
+    padding-right:10vw;
+}
+.container{
+    background-color:rgba(104, 104, 104,0.8);
+    width:80vw;
+    height:30vw;
+    display:block;
+    margin:auto;
+    margin-top: 3vh;
+    padding:3vmin;
+    border-radius: 2vmin;
+}

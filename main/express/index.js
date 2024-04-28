@@ -6,7 +6,7 @@ module.exports = async()=>{
     const config = require("../config.json")
     const port = typeof(config.port)==='undefined'?3000:config.port
     
-    app.use(express.static(path.resolve("./public/")))
+    app.use(express.static(path.join(__dirname, 'public')))
     
     app.get('/hello', (req, res) => {
       res.send('Hello World!')
