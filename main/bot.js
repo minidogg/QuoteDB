@@ -23,6 +23,7 @@ fs.writeFileSync("./config.json",`
 const { Client, Events, GatewayIntentBits,ButtonBuilder,ActionRowBuilder,ButtonStyle, REST, Routes } = require('discord.js');
 const { token,clientId } = require('./config.json');
 const config = require("./config.json")
+const added = typeof(config.host)==="string"&&config.host!==" "?` (Being hosted by ${config.host})`:""
 
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent] });
@@ -219,6 +220,12 @@ function refreshGuilds(){
         console.log(`Done refreshing DB folder for ${len} guilds.`)
     })
 }
+function sendStatus(){
+    client.guilds.fetch().then(async (guildData)=>{
+        console.log(guildData)
+        guildData.channels.cache.find((e)=>e.name.includes("quotes")).send(content)
+    })
+}
 
 client.on("guildCreate",(e)=>{
     refreshCommandI({e,i:1,len:1})
@@ -228,4 +235,5 @@ client.on("guildCreate",(e)=>{
 client.login(token).then(()=>{
     refreshCommands()
     refreshGuilds()
+    // sendStatus()
 })
