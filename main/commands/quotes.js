@@ -15,7 +15,9 @@ module.exports = {
 
         await interaction.reply({embeds:[lazyEmbed({
             "title":"Quotes",
-            "message":`Last 20 quotes: \n\n${quotes}}`
-        })],ephemeral:interaction.channel.name.includes("quotes")});
+            "message":`Last 20 quotes: \n\n${quotes}`
+        })],ephemeral:
+            !(interaction.channel.name.includes("command")||interaction.channel.name.includes("bot"))
+        });
 	},
 };

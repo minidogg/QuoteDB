@@ -26,13 +26,11 @@ var quoteIdRegex = /".+" *- *<@(\d+)>,? *\d*/
 
 var db = getDB()
 setInterval(()=>{
-    if(getDB()!==db){
-        db = getDB()
-    }
     setDB(db)
-},1000)
+},5000)
 
 module.exports.add = (quote,user,userID)=>{
+    console.log({quote,userID})
     try{
         if(quote.length>=350){
             return "Quote can't be bigger than 350 characters!"
