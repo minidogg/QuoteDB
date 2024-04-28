@@ -140,7 +140,6 @@ client.on("interactionCreate",async(i)=>{
     }
     if(i.isCommand()!==true)return
     await commands[i.commandName].execute(i,client)
-
         
     }catch(err){
         console.warn(err)
@@ -234,8 +233,10 @@ async function refreshGuilds(){
         })
     })
 }
-function sendStatus(){
+async function sendStatus(){
     if(clientId!=="1233861877365346334")return
+    let channel = (await client.channels.fetch('1234190000653074603'))
+    await channel.send("# Server is up! "+added)
 }
 
 client.on("guildCreate",(e)=>{

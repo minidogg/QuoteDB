@@ -24,8 +24,8 @@ module.exports = {
         let data = cmd.runSync("git pull")
         await interaction.reply(data.data+"\n\n (Resarting. This may take some time...)")
         console.log("Restarting...")
-        client.channels.fetch('1234190000653074603')
-            .then(channel => channel.send("# Restarting server"));
+        let channel = (await client.channels.fetch('1234190000653074603'))
+        await channel.send("# Restarting...")
         process.exit();
 	},
 };
