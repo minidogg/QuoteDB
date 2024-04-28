@@ -29,7 +29,7 @@ var nextQuoteTime = 0
 var regex = /(".+" *- *<@\d+>,? *\d*)/
 client.on("messageCreate",(msg)=>{
     if(config.guilds&&!config.guilds.includes(msg.guildId)){
-        msg.guild.leave()
+        // msg.guild.leave()
         return
     }
 
