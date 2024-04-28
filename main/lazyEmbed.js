@@ -1,9 +1,9 @@
-const {EmbedBuilder} = require("discord.js")
+import { EmbedBuilder } from "discord.js";
 const genRanHex = size => [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
-const config = require("./config.json")
-const added = typeof(config.host)==="string"&&config.host!==" "?` (Being hosted by ${config.host})`:""
+import { host } from "./config.json";
+const added = typeof(host)==="string"&&host!==" "?` (Being hosted by ${host})`:""
 
-module.exports = ({title="QuoteDB",message,color=("#"+genRanHex(6)),footer="QuoteDB 0.9.0a"})=>{
+export default ({title="QuoteDB",message,color=("#"+genRanHex(6)),footer="QuoteDB 0.9.0a"})=>{
     let embed = new EmbedBuilder()
 	.setTitle(title+added)
     .setColor(color)

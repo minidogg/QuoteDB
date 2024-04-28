@@ -1,4 +1,4 @@
-module.exports = async()=>{
+export default async()=>{
     const path = require("path")
     const db = require("../db.js")
     const express = require('express')
