@@ -18,8 +18,7 @@ module.exports = {
             return
         }
         let data = cmd.runSync("git pull")
-        await interaction.reply(data.data+(data.data.includes("Already up to date.")?"":" (Resarting. This may take some time...)"))
-        if(data.data.includes("Already up to date."))return
+        await interaction.reply(data.data+"\n\n (Resarting. This may take some time...)")
         console.log("Restarting...")
         process.exit();
 	},
