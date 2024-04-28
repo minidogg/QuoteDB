@@ -11,10 +11,11 @@ module.exports = {
          * @param {Interaction} interaction 
          */
 	async execute(interaction) {
+        let quotes = db.getQuotes().map(e=>e.quote).join("\n")
 
         await interaction.reply({embeds:[lazyEmbed({
             "title":"Quotes",
-            "message":`Last 20 quotes: \n`
+            "message":`Last 20 quotes: \n\n${quotes}}`
         })],ephemeral:interaction.channel.name.includes("quotes")});
 	},
 };

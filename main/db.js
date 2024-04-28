@@ -24,6 +24,13 @@ module.exports.setup = setup
 
 var quoteIdRegex = /".+" *- *<@(\d+)>,? *\d*/
 
+var db = getDB()
+setInterval(()=>{
+    if(getDB()!==db){
+        db = getDB()
+    }
+    setDB(db)
+},1000)
 
 module.exports.add = (quote,user,userID)=>{
     try{
@@ -31,9 +38,7 @@ module.exports.add = (quote,user,userID)=>{
             return "Quote can't be bigger than 350 characters!"
         }
         let quoteId = quoteIdRegex.exec(quote)[1] //this is who the quote was about
-        let db = getDB()
         db.quotes.unshift({reporterId:userID,quotedId:quoteId,quote:quote})
-        setDB(db)
         return "Added quote!"
     }catch(err){
         console.warn(err)
@@ -44,9 +49,9 @@ module.exports.add = (quote,user,userID)=>{
 //return array of quotes
 module.exports.getQuotes = function(count=20){
     try{
-        let db = getDB()
         let quotes = []
         for(let i = 0;i<count;i++){
+            if(i>=db.quotes.length)break
             quotes.push(db.quotes[i])
         }
         return quotes
@@ -59,7 +64,6 @@ module.exports.getQuotes = function(count=20){
 //get quotes from a user id
 module.exports.getQuotesFrom = function(userID){
     try{
-        let db = getDB()
         return db.quotes.filter((e)=>e.reporterId==userID)
     }catch(err){
         console.warn(err)
@@ -70,7 +74,6 @@ module.exports.getQuotesFrom = function(userID){
 //get all quotes of a person
 module.exports.getQuotesOf = function(userID){
     try{
-        let db = getDB()
         return db.quotes.filter((e)=>e.quotedId==userID)
     }catch(err){
         console.warn(err)
