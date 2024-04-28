@@ -8,7 +8,8 @@ const config = require("./config.json")
 
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent] });
-const db = require("./db.js")
+const db = require("./db.js");
+const { error } = require("console");
 
 //the actual MEAT of the bot
 const deleteButton = new ButtonBuilder()
@@ -37,6 +38,40 @@ client.on("interactionCreate",(i)=>{
 })
 
 var nextQuoteTime = 0
+client.on("messageCreate",async(msg)=>{
+    if(config.guilds&&!config.guilds.includes(msg.guildId)){
+        return
+    }
+    if(msg.author.bot===true)return
+    if(msg.content !== `<@${clientId}>`)return
+    try{
+        if(Date.now()<=nextQuoteTime){
+            msg.reply({ content: `Please wait ${(nextQuoteTime-Date.now())/1000} more seconds before sending another quote!`,components:[deleteRow]});
+            return
+        }
+        msg.reply({ content: "Adding quote to DB...",components:[deleteRow]});
+
+        let repliedTo;
+        try{
+        repliedTo = await msg.channel.messages.fetch(msg.reference.messageId);
+        }catch(err){
+            console.warn(err)
+            msg.reply({ content: "You must reply to a message to quote it!",components:[deleteRow]})
+            return
+        }
+
+        let content = `"${repliedTo.content}" - <@${repliedTo.author.id}> ${new Date().getFullYear()}`
+        console.log({content,clientId})
+        let add = db.add(content,"QuoteDB",clientId)
+        msg.reply({ content: add,components:[deleteRow]});
+        msg.react("✅")
+        nextQuoteTime = Date.now()+5000
+    }catch(err){
+        console.warn(err)
+        msg.reply("something went wrong")
+    }
+})
+
 var regex = /(".+" *- *<@\d+>,? *\d*)/
 client.on("messageCreate",(msg)=>{
     try{
