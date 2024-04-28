@@ -8,6 +8,17 @@ process.on('unhandledRejection', (reason, promise) => {
 const fs = require("fs")
 const path = require('path')
 
+//add config if it doesnt exist already
+if(!fs.existsSync("./config.json")){
+fs.writeFileSync("./config.json",`
+{
+    "token":"Your bot token",
+    "clientId":"The user id of your bot.",
+    "host":"username or some identifier. or you can just make this a blank string."
+}
+`,"utf-8")
+}
+
 // Require the necessary discord.js classes
 const { Client, Events, GatewayIntentBits,ButtonBuilder,ActionRowBuilder,ButtonStyle, REST, Routes } = require('discord.js');
 const { token,clientId } = require('./config.json');
