@@ -31,9 +31,7 @@ setInterval(()=>{
 },5000)
 
 module.exports.add = (quote, user, userID) => {
-    console.log({ quote, userID });
     try {
-        let db = getDB(); // Fetch the latest database
         if (quote.length >= 350) {
             return "Quote can't be bigger than 350 characters!";
         }
