@@ -1,0 +1,29 @@
+const { SlashCommandBuilder,Interaction } = require('discord.js');
+const lazyEmbed = require("../lazyEmbed.js")
+var os = require('os');
+
+module.exports = {
+	data: new SlashCommandBuilder()
+		.setName('embed')
+		.setDescription('Creates an embed')
+        .addStringOption(option => option.setName('text').setDescription('text').setRequired(true))
+        .addStringOption(option => option.setName('title').setDescription('title').setRequired(true))
+        .addStringOption(option => option.setName('footer').setDescription('footer').setRequired(true)),
+        /**
+         * 
+         * @param {Interaction} interaction 
+         */
+	async execute(interaction) {
+        if(!interaction.member.permissions.has("admin")){
+            interaction.reply({"content":"You don't have perms for this command! (Admin)", ephemeral:true})
+            return
+        }
+        console.log(interaction.options)
+        await interaction.reply({embeds:[lazyEmbed({
+            "title":interaction.options._hoistedOptions[1],
+            "message":interaction.options._hoistedOptions[0],
+            "footer":interaction.options._hoistedOptions[2]
+        })],
+        });
+	},
+};
