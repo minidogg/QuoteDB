@@ -12,7 +12,7 @@ module.exports = {
          */
 	async execute(interaction) {
         await interaction.reply({embeds:[lazyEmbed({
-            "title":"Ping",
+            "title":"Pong! :ping_pong:",
             "message":`Server has been up for ${process.uptime()} seconds.`})],
             ephemeral:!(interaction.channel.name.includes("command")||interaction.channel.name.includes("bot"))});
 	},
