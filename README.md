@@ -4,7 +4,7 @@ A database for storing all your quotes.
 
 
 # Running
-1. Get node.js
+1. Get [node.js](https://nodejs.org/en/download)
 2. run `cd ./main`
 3. run `npm ci`
 3. node bot.js
