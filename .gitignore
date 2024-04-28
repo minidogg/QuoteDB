@@ -3,3 +3,4 @@ package-lock.json
 .env
 config.json
 db/*
+log.txt
