@@ -23,7 +23,7 @@ module.exports = {
 	async execute(interaction) {
         switch(interaction.options._subcommand){
             case("last"):
-                var quotes = db.getQuotes().map(e=>e.quote+` (<@${e.reporterId}>)`).join("\n")
+                var quotes = db.getQuotes(interaction.guild.id).map(e=>e.quote+` (<@${e.reporterId}>)`).join("\n")
 
                 await interaction.reply({embeds:[lazyEmbed({
                     "title":"Quotes",

@@ -1,9 +1,11 @@
 const fs = require("fs")
 
-function getDB(){
+const gg = (id,file="")=>"../db/"+id+"/"+file
+
+function getDBmain(){
     return JSON.parse(fs.readFileSync("../db/db.json","utf-8"))
 }
-function setDB(data){
+function setDBmain(data){
     return fs.writeFileSync("../db/db.json",JSON.stringify(data),"utf-8")
 }
 
@@ -12,12 +14,12 @@ function setup(){
         fs.mkdirSync("../db")
     }
     if(!fs.existsSync("../db/db.json")){
-        fs.writeFileSync("../db/db.json",JSON.stringify({'quotes':[]}),"utf-8")
+        fs.writeFileSync("../db/db.json",JSON.stringify({'guilds':[]}),"utf-8")
     }
-    let db = getDB()
-    if(typeof(db.quotes)==="undefined"){
-        db.quotes = []
-        setDB(db)
+    let db = getDBmain()
+    if(typeof(db.guilds)==="undefined"){
+        db.guilds = []
+        setDBmain(db)
     }
 }
 setup()
@@ -25,34 +27,53 @@ setup()
 var quoteIdRegex = /".+" *- *<@(\d+)>,? *\d*/
 
 
-var db = getDB()
+var dbMain = getDBmain()
 setInterval(()=>{
-    setDB(db)
+    setDBmain(dbMain)
 },5000)
 
-module.exports.add = (quote, user, userID) => {
+module.exports.createGuild = (id)=>{
+    if(!fs.existsSync("../db/"+id)){
+        fs.mkdirSync("../db/"+id)
+        fs.writeFileSync("../db/"+id+"/db.json",JSON.stringify({files:1}))
+        fs.writeFileSync("../db/"+id+"/0.json",JSON.stringify({quotes:[]}))
+    }
+    if(!dbMain.guilds.find(e=>e==id)){
+        dbMain.guilds.push(id)
+    }
+}
+
+module.exports.add = (quote, user, userID,guildId) => {
     try {
         if (quote.length >= 350) {
             return "Quote can't be bigger than 350 characters!";
         }
         let quoteId = quoteIdRegex.exec(quote)[1]; //this is who the quote was about
-        db.quotes.unshift({ reporterId: userID, quotedId: quoteId, quote: quote });
-        setDB(db); // Save the updated database
+        let quoteData = { reporterId: userID, quotedId: quoteId, quote: quote }
+        
+        
+
         return "Added quote!";
     } catch (err) {
         console.warn(err);
         return "Something went wrong when adding the quote to the DB!";
     }
+    return "Not implemented."
 };
 
 
 //return array of quotes
-module.exports.getQuotes = function(count=20){
+module.exports.getQuotes = function(guildId,count=20){
     try{
         let quotes = []
-        for(let i = 0;i<count;i++){
-            if(i>=db.quotes.length)break
-            quotes.push(db.quotes[i])
+        let main = JSON.parse(fs.readFileSync(gg(guildId,"db.json"),"utf-8"))
+        for(let i = main.files;i>0;i--){
+            if(quotes.length>=20)break
+            let file = JSON.parse(fs.readFileSync(gg(guildId,(i-1)+".json"),"utf-8"))
+            for(let i2 = 0;i2<file.quotes.length;i2++){
+                if(quotes.length>=20)break
+                quotes.push(file.quotes[i2])
+            }
         }
         return quotes
     }catch(err){
@@ -62,21 +83,51 @@ module.exports.getQuotes = function(count=20){
 }
 
 //get quotes from a user id
-module.exports.getQuotesFrom = function(userID){
+module.exports.getQuotesFrom = function(userID,cap=-1){
     try{
-        return db.quotes.filter((e)=>e.reporterId==userID)
+        let quotes = []
+        dbMain.guilds.forEach((guildId)=>{
+            let main = JSON.parse(fs.readFileSync(gg(guildId,"db.json"),"utf-8"))
+
+            for(let i = main.files;i>0;i--){
+                if(quotes.length>=cap&&cap>0)break
+                let file = JSON.parse(fs.readFileSync(gg(guildId,(i-1)+".json"),"utf-8"))
+                for(let i2 = 0;i2<file.quotes.length;i2++){
+                    if(quotes.length>=cap&&cap>0)break
+                    if(file.quotes[i2].reporterId==userID)quotes.push(file.quotes[i2])
+                }
+            }
+
+        })   
+
+        return quotes
     }catch(err){
         console.warn(err)
-        return `Something went wrong when retrieving last quotes from <@${userID}>!`
+        return `Something went wrong when retrieving quotes!`
     }
 }
 
 //get all quotes of a person
-module.exports.getQuotesOf = function(userID){
+module.exports.getQuotesOf = function(userID,cap=-1){
     try{
-        return db.quotes.filter((e)=>e.quotedId==userID)
+        let quotes = []
+        dbMain.guilds.forEach((guildId)=>{
+            let main = JSON.parse(fs.readFileSync(gg(guildId,"db.json"),"utf-8"))
+
+            for(let i = main.files;i>0;i--){
+                if(quotes.length>=cap&&cap>0)break
+                let file = JSON.parse(fs.readFileSync(gg(guildId,(i-1)+".json"),"utf-8"))
+                for(let i2 = 0;i2<file.quotes.length;i2++){
+                    if(quotes.length>=cap&&cap>0)break
+                    if(file.quotes[i2].quotedId==userID)quotes.push(file.quotes[i2])
+                }
+            }
+
+        })   
+
+        return quotes
     }catch(err){
         console.warn(err)
-        return `Something went wrong when retrieving last quotes of <@${userID}>!`
+        return `Something went wrong when retrieving quotes!`
     }
 }

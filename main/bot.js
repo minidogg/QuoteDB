@@ -171,16 +171,19 @@ const refreshCommandI = async({e,i,len})=>{
             console.error(error);
         }
     })();
+    console.log(`Done refreshing commands for guild: ${guildId} (${e.name}) (${i}/${len})`)
+
 }
 const refreshCommands = async ()=>{
 
     client.guilds.fetch().then(async (guildData)=>{
         let len = guildData.size
+
         console.log(`Starting to refresh commands for ${len} guilds`)
         let i = 0
         guildData.forEach(async(e)=>{
             i++
-            refreshCommandI({e,i,len})
+            await refreshCommandI({e,i,len})
 
         })
 
@@ -188,10 +191,30 @@ const refreshCommands = async ()=>{
     })
 
 }
+function refreshGuilds(){
+    client.guilds.fetch().then(async (guildData)=>{
+        let len = guildData.size
+        console.log(`Starting to refresh DB folder for ${len} guilds`)
+        let i = 0
+        guildData.forEach(async(e)=>{
+            i++
+            let guildId = e.id
+            console.log(`Refreshing folder for guild: ${guildId} (${e.name}) (${i}/${len})`)
+            db.createGuild(e.id)
+            console.log(`Done refreshing folder for guild: ${guildId} (${e.name}) (${i}/${len})`)
+
+        })
+
+        console.log(`Done refreshing DB folder for ${len} guilds.`)
+    })
+}
+
 client.on("guildCreate",(e)=>{
     refreshCommandI({e,i:1,len:1})
+    db.createGuild(e.id)
 })
 
 client.login(token).then(()=>{
     refreshCommands()
+    refreshGuilds()
 })
