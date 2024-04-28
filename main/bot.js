@@ -15,6 +15,7 @@ fs.writeFileSync("./config.json",`
     "token":"Your bot token",
     "clientId":"The user id of your bot.",
     "host":"username or some identifier. or you can just make this a blank string."
+    "port":"3000"
 }
 `,"utf-8")
 }
