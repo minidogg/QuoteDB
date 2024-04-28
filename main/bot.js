@@ -20,6 +20,11 @@ const deleteRow = new ActionRowBuilder()
 .addComponents(deleteButton);
 
 client.on("interactionCreate",(i)=>{
+    if(config.guilds&&!config.guilds.includes(i.guildId)){
+        // msg.guild.leave()
+        i.reply("Current host is running on a whitelist.")
+        return
+    }
     if(i.isButton()==false)return
     if(i.component.customId!="delete")return
     i.message.delete()
@@ -30,6 +35,7 @@ var regex = /(".+" *- *<@\d+>,? *\d*)/
 client.on("messageCreate",(msg)=>{
     if(config.guilds&&!config.guilds.includes(msg.guildId)){
         // msg.guild.leave()
+        msg.reply("Current host is running on a whitelist.")
         return
     }
 
@@ -57,6 +63,11 @@ client.on("messageCreate",(msg)=>{
 
 //command interaction handler
 client.on("interactionCreate",async(i)=>{
+    if(config.guilds&&!config.guilds.includes(i.guildId)){
+        // msg.guild.leave()
+        i.reply("Current host is running on a whitelist.")
+        return
+    }
     if(i.isCommand()!==true)return
     await commands[i.commandName].execute(i)
 })
@@ -65,6 +76,7 @@ client.on("interactionCreate",async(i)=>{
 //commands
 var commands = {}
 fs.readdirSync("./commands").forEach((file)=>{
+    
     let rq = require(path.resolve("./commands/"+file))
     commands[rq.data.name] = rq
 })
