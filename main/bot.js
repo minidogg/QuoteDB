@@ -109,6 +109,27 @@ client.once(Events.ClientReady, readyClient => {
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 });
 
+const refreshCommandI = async({e,i,len})=>{
+    let guildId = e.id
+    console.log(`Refreshing commands for guild: ${guildId} (${e.name}) (${i}/${len})`)
+    const rest = new REST().setToken(token);
+    await (async () => {
+        try {
+            console.log(`Started refreshing ${commands2.length} application (/) commands.`);
+    
+            // The put method is used to fully refresh all commands in the guild with the current set
+            const data = await rest.put(
+                Routes.applicationGuildCommands(clientId, guildId),
+                { body: commands2 },
+            );
+    
+            console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+        } catch (error) {
+            // And of course, make sure you catch and log any errors!
+            console.error(error);
+        }
+    })();
+}
 const refreshCommands = async ()=>{
 
     client.guilds.fetch().then(async (guildData)=>{
@@ -117,26 +138,7 @@ const refreshCommands = async ()=>{
         let i = 0
         guildData.forEach(async(e)=>{
             i++
-            let guildId = e.id
-            console.log(`Refreshing commands for guild: ${guildId} (${e.name}) (${i}/${len})`)
-            const rest = new REST().setToken(token);
-            await (async () => {
-                try {
-                    console.log(`Started refreshing ${commands2.length} application (/) commands.`);
-            
-                    // The put method is used to fully refresh all commands in the guild with the current set
-                    const data = await rest.put(
-                        Routes.applicationGuildCommands(clientId, guildId),
-                        { body: commands2 },
-                    );
-            
-                    console.log(`Successfully reloaded ${data.length} application (/) commands.`);
-                } catch (error) {
-                    // And of course, make sure you catch and log any errors!
-                    console.error(error);
-                }
-            })();
-            console.log(`Done refreshing commands for guild: ${guildId} (${e.name})  (${i}/${len})`)
+            refreshCommandI({e,i,len})
 
         })
 
@@ -144,6 +146,10 @@ const refreshCommands = async ()=>{
     })
 
 }
+client.on("guildCreate",(e)=>{
+    refreshCommandI({e,i:1,len:1})
+})
+
 client.login(token).then(()=>{
     refreshCommands()
 })
