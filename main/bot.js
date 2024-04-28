@@ -1,3 +1,10 @@
+process.on('unhandledRejection', (reason, promise) => {
+    console.warn(reason)
+    // console.log('Unhandled Rejection at:', reason.stack || reason)
+    // Recommended: send the information to sentry.io
+    // or whatever crash reporting service you use
+})
+
 const fs = require("fs")
 const path = require('path')
 
@@ -46,7 +53,7 @@ client.on("messageCreate",async(msg)=>{
     if(msg.content !== `<@${clientId}>`)return
     try{
         if(Date.now()<=nextQuoteTime){
-            msg.reply({ content: `Please wait ${(nextQuoteTime-Date.now())/1000} more seconds before sending another quote!`,components:[deleteRow]});
+            msg.reply({ content: `Please wait ${(nextQuoteTime-Date.now())/1000} more seconds before making another quote!`,components:[deleteRow]});
             return
         }
         msg.reply({ content: "Adding quote to DB...",components:[deleteRow]});
@@ -61,11 +68,11 @@ client.on("messageCreate",async(msg)=>{
         }
 
         let content = `"${repliedTo.content}" - <@${repliedTo.author.id}> ${new Date().getFullYear()}`
-        console.log({content,clientId})
         let add = db.add(content,"QuoteDB",clientId)
-        msg.reply({ content: add,components:[deleteRow]});
-        msg.react("✅")
+        await msg.reply({ content: add,components:[deleteRow]});
+        await msg.react("✅")
         nextQuoteTime = Date.now()+5000
+        msg.guild.channels.cache.find((e)=>e.name.includes("quotes")).send(content)
     }catch(err){
         console.warn(err)
         msg.reply("something went wrong")
@@ -73,7 +80,7 @@ client.on("messageCreate",async(msg)=>{
 })
 
 var regex = /(".+" *- *<@\d+>,? *\d*)/
-client.on("messageCreate",(msg)=>{
+client.on("messageCreate",async(msg)=>{
     try{
     if(config.guilds&&!config.guilds.includes(msg.guildId)){
         // msg.guild.leave()
@@ -96,8 +103,8 @@ client.on("messageCreate",(msg)=>{
     try{
         let add = db.add(regex.exec(msg.content)[1],msg.author.username,msg.author.id)
 
-        msg.reply({ content: add,components:[deleteRow]});
-        msg.react("✅")
+        await msg.reply({ content: add,components:[deleteRow]});
+        await msg.react("✅")
         nextQuoteTime = Date.now()+5000
     }catch(err){
         console.warn(err)
