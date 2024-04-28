@@ -29,20 +29,23 @@ setInterval(()=>{
     setDB(db)
 },5000)
 
-module.exports.add = (quote,user,userID)=>{
-    console.log({quote,userID})
-    try{
-        if(quote.length>=350){
-            return "Quote can't be bigger than 350 characters!"
+module.exports.add = (quote, user, userID) => {
+    console.log({ quote, userID });
+    try {
+        let db = getDB(); // Fetch the latest database
+        if (quote.length >= 350) {
+            return "Quote can't be bigger than 350 characters!";
         }
-        let quoteId = quoteIdRegex.exec(quote)[1] //this is who the quote was about
-        db.quotes.unshift({reporterId:userID,quotedId:quoteId,quote:quote})
-        return "Added quote!"
-    }catch(err){
-        console.warn(err)
-        return "Something went wrong when adding the quote to the DB!"
+        let quoteId = quoteIdRegex.exec(quote)[1]; //this is who the quote was about
+        db.quotes.unshift({ reporterId: userID, quotedId: quoteId, quote: quote });
+        setDB(db); // Save the updated database
+        return "Added quote!";
+    } catch (err) {
+        console.warn(err);
+        return "Something went wrong when adding the quote to the DB!";
     }
-}
+};
+
 
 //return array of quotes
 module.exports.getQuotes = function(count=20){
