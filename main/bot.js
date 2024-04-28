@@ -54,7 +54,10 @@ client.on("messageCreate",(msg)=>{
         return
     }
     msg.reply({ content: "Adding quote to DB...",components:[deleteRow]});
-
+    }catch(err){
+        console.warn(err)
+        msg.reply("Something went wrong")
+    }
     try{
         let add = db.add(regex.exec(msg.content)[1],msg.author.username,msg.author.id)
 
@@ -66,10 +69,7 @@ client.on("messageCreate",(msg)=>{
         msg.reply("Something went wrong when adding quote to DB!")
     }
 
-    }catch(err){
-        console.warn(err)
-        msg.reply("Something went wrong")
-    }
+  
 })
 
 
