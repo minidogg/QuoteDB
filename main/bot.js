@@ -249,5 +249,5 @@ client.login(token).then(async()=>{
     await refreshGuilds()
     sendStatus()
 
-    express()//runs ./express/index.js
+    // express()//runs ./express/index.js
 })
