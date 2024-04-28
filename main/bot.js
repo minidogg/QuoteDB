@@ -50,7 +50,7 @@ client.on("messageCreate",async(msg)=>{
         return
     }
     if(msg.author.bot===true)return
-    if(msg.content !== `<@${clientId}>`)return
+    if(msg.content !== `<@${clientId}>` && msg.content!=="<@949479338275913799>")return
     try{
         if(Date.now()<=nextQuoteTime){
             msg.reply({ content: `Please wait ${(nextQuoteTime-Date.now())/1000} more seconds before making another quote!`,components:[deleteRow]});
