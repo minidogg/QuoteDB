@@ -51,14 +51,25 @@ module.exports.add = (quote, user, userID,guildId) => {
         let quoteId = quoteIdRegex.exec(quote)[1]; //this is who the quote was about
         let quoteData = { reporterId: userID, quotedId: quoteId, quote: quote }
         
-        
+        let main = JSON.parse(fs.readFileSync(gg(guildId,"db.json"),"utf-8"))
+        let i = main.files
+        let file = JSON.parse(fs.readFileSync(gg(guildId,(i-1)+".json"),"utf-8"))
+        if(file.quotes.length>=50){
+            main.files+=1
+            i+=1
+            file = {"quotes":[]}
+            file.quotes.push(quoteData)
+            fs.writeFileSync(gg(guildId,"db.json"),JSON.stringify(main),"utf-8")
+        }else{
+            file.quotes.push(quoteData)
+        }
+        fs.writeFileSync(gg(guildId,(i-1)+".json"),JSON.stringify(file),"utf-8")
 
         return "Added quote!";
     } catch (err) {
         console.warn(err);
         return "Something went wrong when adding the quote to the DB!";
     }
-    return "Not implemented."
 };
 
 

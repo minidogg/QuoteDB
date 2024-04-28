@@ -68,7 +68,7 @@ client.on("messageCreate",async(msg)=>{
         }
 
         let content = `"${repliedTo.content}" - <@${repliedTo.author.id}> ${new Date().getFullYear()}`
-        let add = db.add(content,"QuoteDB",clientId)
+        let add = db.add(content,"QuoteDB",clientId,msg.guild.id)
         await msg.reply({ content: add,components:[deleteRow]});
         await msg.react("✅")
         nextQuoteTime = Date.now()+5000
@@ -101,7 +101,7 @@ client.on("messageCreate",async(msg)=>{
         msg.reply("Something went wrong")
     }
     try{
-        let add = db.add(regex.exec(msg.content)[1],msg.author.username,msg.author.id)
+        let add = db.add(regex.exec(msg.content)[1],msg.author.username,msg.author.id,msg.guild.id)
 
         await msg.reply({ content: add,components:[deleteRow]});
         await msg.react("✅")
