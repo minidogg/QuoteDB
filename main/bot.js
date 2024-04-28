@@ -22,10 +22,10 @@ if(!existsSync("./config.json")){
 
 // Require the necessary discord.js classes
 import { Client, Events, GatewayIntentBits, ButtonBuilder, ActionRowBuilder, ButtonStyle, REST, Routes } from 'discord.js'
-import { token, clientId } from './config.json'
-import { host, guilds } from "./config.json"
-const added = typeof(host)==="string"&&host!==" "?` (Being hosted by ${host})`:""
-import express from "./express/index.js"
+import { token, clientId } from './config.json' with { type: "json" };
+import { host, guilds } from "./config.json" with { type: "json" };
+const added = typeof(host)==="string"&&host!==" "?` (Being hosted by ${host})`:"";
+import express from "./express/index.js";
 
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent] });
