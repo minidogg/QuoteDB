@@ -4,6 +4,7 @@ const path = require('path')
 // Require the necessary discord.js classes
 const { Client, Events, GatewayIntentBits,ButtonBuilder,ActionRowBuilder,ButtonStyle, REST, Routes } = require('discord.js');
 const { token,clientId } = require('./config.json');
+const config = require("./config.json")
 
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent] });
@@ -27,6 +28,11 @@ client.on("interactionCreate",(i)=>{
 var nextQuoteTime = 0
 var regex = /(".+" *- *<@\d+>,? *\d*)/
 client.on("messageCreate",(msg)=>{
+    if(config.guilds&&!config.guilds.includes(msg.guildId)){
+        msg.guild.leave()
+        return
+    }
+
     if(!msg.channel.name.includes("quotes"))return
     if(msg.author.bot===true)return
     if(!regex.test(msg.content))return

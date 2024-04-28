@@ -4,7 +4,7 @@ module.exports = ({title="QuoteDB",message,color=("#"+genRanHex(6))})=>{
     let embed = new EmbedBuilder()
 	.setTitle(title)
     .setColor(color)
-    .setDescription(message)
+    .setDescription(message+"\n")
     .setFooter({"text":"QuoteDB 0.1.0a"});
 
     return embed

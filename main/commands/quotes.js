@@ -38,7 +38,7 @@ module.exports = {
                     interaction.reply("Invalid user/userID!")
                     return
                 }
-                var quotes = db.getQuotesOf(id).map(e=>e.quote).join("\n")
+                var quotes = db.getQuotesOf(id).map(e=>e.quote).join("\n\nRemember that the bot is still in alpha and is buggy:blehhh:")
 
                 await interaction.reply({embeds:[lazyEmbed({
                     "title":"Quotes",
