@@ -1,20 +1,20 @@
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs"
+const fs = require("fs")
 
 const gg = (id,file="")=>"../db/"+id+"/"+file
 
 function getDBmain(){
-    return JSON.parse(readFileSync("../db/db.json","utf-8"))
+    return JSON.parse(fs.readFileSync("../db/db.json","utf-8"))
 }
 function setDBmain(data){
-    return writeFileSync("../db/db.json",JSON.stringify(data),"utf-8")
+    return fs.writeFileSync("../db/db.json",JSON.stringify(data),"utf-8")
 }
 
 function setup(){
-    if(!existsSync("../db")){
-        mkdirSync("../db")
+    if(!fs.existsSync("../db")){
+        fs.mkdirSync("../db")
     }
-    if(!existsSync("../db/db.json")){
-        writeFileSync("../db/db.json",JSON.stringify({'guilds':[]}),"utf-8")
+    if(!fs.existsSync("../db/db.json")){
+        fs.writeFileSync("../db/db.json",JSON.stringify({'guilds':[]}),"utf-8")
     }
     let db = getDBmain()
     if(typeof(db.guilds)==="undefined"){
@@ -32,18 +32,18 @@ setInterval(()=>{
     setDBmain(dbMain)
 },5000)
 
-export function createGuild(id){
-    if(!existsSync("../db/"+id)){
-        mkdirSync("../db/"+id)
-        writeFileSync("../db/"+id+"/db.json",JSON.stringify({files:1}))
-        writeFileSync("../db/"+id+"/0.json",JSON.stringify({quotes:[]}))
+module.exports.createGuild = (id)=>{
+    if(!fs.existsSync("../db/"+id)){
+        fs.mkdirSync("../db/"+id)
+        fs.writeFileSync("../db/"+id+"/db.json",JSON.stringify({files:1}))
+        fs.writeFileSync("../db/"+id+"/0.json",JSON.stringify({quotes:[]}))
     }
     if(!dbMain.guilds.find(e=>e==id)){
         dbMain.guilds.push(id)
     }
 }
 
-export function add(quote, user, userID,guildId) {
+module.exports.add = (quote, user, userID,guildId) => {
     try {
         if (quote.length >= 350) {
             return "Quote can't be bigger than 350 characters!";
@@ -51,36 +51,36 @@ export function add(quote, user, userID,guildId) {
         let quoteId = quoteIdRegex.exec(quote)[1]; //this is who the quote was about
         let quoteData = { reporterId: userID, quotedId: quoteId, quote: quote }
         
-        let main = JSON.parse(readFileSync(gg(guildId,"db.json"),"utf-8"))
+        let main = JSON.parse(fs.readFileSync(gg(guildId,"db.json"),"utf-8"))
         let i = main.files
-        let file = JSON.parse(readFileSync(gg(guildId,(i-1)+".json"),"utf-8"))
+        let file = JSON.parse(fs.readFileSync(gg(guildId,(i-1)+".json"),"utf-8"))
         if(file.quotes.length>=50){
             main.files+=1
             i+=1
             file = {"quotes":[]}
             file.quotes.push(quoteData)
-            writeFileSync(gg(guildId,"db.json"),JSON.stringify(main),"utf-8")
+            fs.writeFileSync(gg(guildId,"db.json"),JSON.stringify(main),"utf-8")
         }else{
             file.quotes.push(quoteData)
         }
-        writeFileSync(gg(guildId,(i-1)+".json"),JSON.stringify(file),"utf-8")
+        fs.writeFileSync(gg(guildId,(i-1)+".json"),JSON.stringify(file),"utf-8")
 
         return "Added quote!";
     } catch (err) {
         console.warn(err);
         return "Something went wrong when adding the quote to the DB!";
     }
-}
+};
 
 
 //return array of quotes
-export function getQuotes(guildId,count=20){
+module.exports.getQuotes = function(guildId,count=20){
     try{
         let quotes = []
-        let main = JSON.parse(readFileSync(gg(guildId,"db.json"),"utf-8"))
+        let main = JSON.parse(fs.readFileSync(gg(guildId,"db.json"),"utf-8"))
         for(let i = main.files;i>0;i--){
             if(quotes.length>=20)break
-            let file = JSON.parse(readFileSync(gg(guildId,(i-1)+".json"),"utf-8"))
+            let file = JSON.parse(fs.readFileSync(gg(guildId,(i-1)+".json"),"utf-8"))
             for(let i2 = 0;i2<file.quotes.length;i2++){
                 if(quotes.length>=20)break
                 quotes.push(file.quotes[i2])
@@ -94,15 +94,15 @@ export function getQuotes(guildId,count=20){
 }
 
 //get quotes from a user id
-export function getQuotesFrom(userID,cap=-1){
+module.exports.getQuotesFrom = function(userID,cap=-1){
     try{
         let quotes = []
         dbMain.guilds.forEach((guildId)=>{
-            let main = JSON.parse(readFileSync(gg(guildId,"db.json"),"utf-8"))
+            let main = JSON.parse(fs.readFileSync(gg(guildId,"db.json"),"utf-8"))
 
             for(let i = main.files;i>0;i--){
                 if(quotes.length>=cap&&cap>0)break
-                let file = JSON.parse(readFileSync(gg(guildId,(i-1)+".json"),"utf-8"))
+                let file = JSON.parse(fs.readFileSync(gg(guildId,(i-1)+".json"),"utf-8"))
                 for(let i2 = 0;i2<file.quotes.length;i2++){
                     if(quotes.length>=cap&&cap>0)break
                     if(file.quotes[i2].reporterId==userID)quotes.push(file.quotes[i2])
@@ -119,15 +119,15 @@ export function getQuotesFrom(userID,cap=-1){
 }
 
 //get all quotes of a person
-export function getQuotesOf(userID,cap=-1){
+module.exports.getQuotesOf = function(userID,cap=-1){
     try{
         let quotes = []
         dbMain.guilds.forEach((guildId)=>{
-            let main = JSON.parse(readFileSync(gg(guildId,"db.json"),"utf-8"))
+            let main = JSON.parse(fs.readFileSync(gg(guildId,"db.json"),"utf-8"))
 
             for(let i = main.files;i>0;i--){
                 if(quotes.length>=cap&&cap>0)break
-                let file = JSON.parse(readFileSync(gg(guildId,(i-1)+".json"),"utf-8"))
+                let file = JSON.parse(fs.readFileSync(gg(guildId,(i-1)+".json"),"utf-8"))
                 for(let i2 = 0;i2<file.quotes.length;i2++){
                     if(quotes.length>=cap&&cap>0)break
                     if(file.quotes[i2].quotedId==userID)quotes.push(file.quotes[i2])

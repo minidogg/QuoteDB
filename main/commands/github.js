@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, Interaction, ButtonBuilder, ActionRowBuilder, ButtonStyle } from 'discord.js';
+const { SlashCommandBuilder,Interaction,ButtonBuilder,ActionRowBuilder,ButtonStyle } = require('discord.js');
 
 const deleteButton = new ButtonBuilder()
 .setCustomId('delete')
@@ -7,21 +7,20 @@ const deleteButton = new ButtonBuilder()
 const deleteRow = new ActionRowBuilder()
 .addComponents(deleteButton);
 
-import lazyEmbed from "../lazyEmbed.js";
+const lazyEmbed = require("../lazyEmbed.js")
 
-export const data = new SlashCommandBuilder()
-    .setName('github')
-    .setDescription('Replies with github repo link');
-export
-    /**
-     *
-     * @param {Interaction} interaction
-     */
-    async function execute(interaction) {
-    await interaction.reply({
-        embeds: [lazyEmbed({
-            "title": "Github Repo",
-            "message": "[Repo](https://github.com/ReallyBadDeveloper/QuoteDB)"
-        })], ephemeral: true
-    });
-}
+module.exports = {
+	data: new SlashCommandBuilder()
+		.setName('github')
+		.setDescription('Replies with github repo link'),
+        /**
+         * 
+         * @param {Interaction} interaction 
+         */
+	async execute(interaction) {
+		await interaction.reply({embeds:[lazyEmbed({
+            "title":"Github Repo",
+            "message":"[Repo](https://github.com/ReallyBadDeveloper/QuoteDB)"
+        })],ephemeral:true});
+	},
+};

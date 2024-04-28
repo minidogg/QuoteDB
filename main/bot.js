@@ -5,12 +5,12 @@ process.on('unhandledRejection', (reason, promise) => {
     // or whatever crash reporting service you use
 })
 
-import { existsSync, writeFileSync, readdirSync } from "fs"
-import { resolve } from 'path'
+const fs = require("fs")
+const path = require('path')
 
 //add config if it doesnt exist already
-if(!existsSync("./config.json")){
-    writeFileSync("./config.json",`
+if(!fs.existsSync("./config.json")){
+fs.writeFileSync("./config.json",`
 {
     "token":"Your bot token",
     "clientId":"The user id of your bot.",
@@ -21,16 +21,16 @@ if(!existsSync("./config.json")){
 }
 
 // Require the necessary discord.js classes
-import { Client, Events, GatewayIntentBits, ButtonBuilder, ActionRowBuilder, ButtonStyle, REST, Routes } from 'discord.js'
-import { token, clientId } from './config.json' with { type: "json" };
-import { host, guilds } from "./config.json" with { type: "json" };
-const added = typeof(host)==="string"&&host!==" "?` (Being hosted by ${host})`:"";
-import express from "./express/index.js";
+const { Client, Events, GatewayIntentBits,ButtonBuilder,ActionRowBuilder,ButtonStyle, REST, Routes } = require('discord.js');
+const { token,clientId } = require('./config.json');
+const config = require("./config.json")
+const added = typeof(config.host)==="string"&&config.host!==" "?` (Being hosted by ${config.host})`:""
+const express = require("./express/index.js")
 
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent] });
-import { add as _add, createGuild } from "./db.js"
-import { error } from "console"
+const db = require("./db.js");
+const { error } = require("console");
 
 //the actual MEAT of the bot
 const deleteButton = new ButtonBuilder()
@@ -42,7 +42,7 @@ const deleteRow = new ActionRowBuilder()
 
 client.on("interactionCreate",(i)=>{
     try{
-    if(guilds&&!guilds.includes(i.guildId)){
+    if(config.guilds&&!config.guilds.includes(i.guildId)){
         // msg.guild.leave()
         // i.reply("Current host is running on a whitelist.")
         return
@@ -60,7 +60,7 @@ client.on("interactionCreate",(i)=>{
 
 var nextQuoteTime = 0
 client.on("messageCreate",async(msg)=>{
-    if(guilds&&!guilds.includes(msg.guildId)){
+    if(config.guilds&&!config.guilds.includes(msg.guildId)){
         return
     }
     if(msg.author.bot===true)return
@@ -82,7 +82,7 @@ client.on("messageCreate",async(msg)=>{
         }
 
         let content = `"${repliedTo.content}" - <@${repliedTo.author.id}> ${new Date().getFullYear()}`
-        let add = _add(content,"QuoteDB",clientId,msg.guild.id)
+        let add = db.add(content,"QuoteDB",clientId,msg.guild.id)
         await msg.reply({ content: add,components:[deleteRow]});
         await msg.react("✅")
         nextQuoteTime = Date.now()+5000
@@ -96,7 +96,7 @@ client.on("messageCreate",async(msg)=>{
 var regex = /(".+" *- *<@\d+>,? *\d*)/
 client.on("messageCreate",async(msg)=>{
     try{
-    if(guilds&&!guilds.includes(msg.guildId)){
+    if(config.guilds&&!config.guilds.includes(msg.guildId)){
         // msg.guild.leave()
         // msg.reply("Current host is running on a whitelist.")
         return
@@ -115,7 +115,7 @@ client.on("messageCreate",async(msg)=>{
         msg.reply("Something went wrong")
     }
     try{
-        let add = _add(regex.exec(msg.content)[1],msg.author.username,msg.author.id,msg.guild.id)
+        let add = db.add(regex.exec(msg.content)[1],msg.author.username,msg.author.id,msg.guild.id)
 
         await msg.reply({ content: add,components:[deleteRow]});
         await msg.react("✅")
@@ -133,7 +133,7 @@ client.on("messageCreate",async(msg)=>{
 client.on("interactionCreate",async(i)=>{
     try{
 
-    if(guilds&&!guilds.includes(i.guildId)){
+    if(config.guilds&&!config.guilds.includes(i.guildId)){
         // msg.guild.leave()
         // i.reply("Current host is running on a whitelist.")
         return
@@ -152,9 +152,9 @@ client.on("interactionCreate",async(i)=>{
 //commands
 var commands = {}
 var jsRegex = /^.*\.js$/
-readdirSync("./commands").forEach((file)=>{
+fs.readdirSync("./commands").forEach((file)=>{
     if(!jsRegex.test(file))return
-    let rq = require(resolve("./commands/"+file))
+    let rq = require(path.resolve("./commands/"+file))
     commands[rq.data.name] = rq
 })
 var commands2 = Object.values(commands).map(e=>e.data.toJSON())
@@ -224,7 +224,7 @@ async function refreshGuilds(){
                 i++
                 let guildId = e.id
                 console.log(`Refreshing folder for guild: ${guildId} (${e.name}) (${i}/${len})`)
-                createGuild(e.id)
+                db.createGuild(e.id)
                 console.log(`Done refreshing folder for guild: ${guildId} (${e.name}) (${i}/${len})`)
     
             })
@@ -240,7 +240,7 @@ function sendStatus(){
 
 client.on("guildCreate",(e)=>{
     refreshCommandI({e,i:1,len:1})
-    createGuild(e.id)
+    db.createGuild(e.id)
 })
 
 client.login(token).then(async()=>{
