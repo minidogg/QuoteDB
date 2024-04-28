@@ -20,22 +20,30 @@ const deleteRow = new ActionRowBuilder()
 .addComponents(deleteButton);
 
 client.on("interactionCreate",(i)=>{
+    try{
     if(config.guilds&&!config.guilds.includes(i.guildId)){
         // msg.guild.leave()
-        i.reply("Current host is running on a whitelist.")
+        // i.reply("Current host is running on a whitelist.")
         return
     }
     if(i.isButton()==false)return
     if(i.component.customId!="delete")return
     i.message.delete()
+
+        
+    }catch(err){
+        console.warn(err)
+        i.reply("Something went wrong")
+    }
 })
 
 var nextQuoteTime = 0
 var regex = /(".+" *- *<@\d+>,? *\d*)/
 client.on("messageCreate",(msg)=>{
+    try{
     if(config.guilds&&!config.guilds.includes(msg.guildId)){
         // msg.guild.leave()
-        msg.reply("Current host is running on a whitelist.")
+        // msg.reply("Current host is running on a whitelist.")
         return
     }
 
@@ -58,18 +66,31 @@ client.on("messageCreate",(msg)=>{
         console.warn(err)
         msg.reply("Something went wrong when adding quote to DB!")
     }
+
+    }catch(err){
+        console.warn(err)
+        msg.reply("Something went wrong")
+    }
 })
 
 
 //command interaction handler
 client.on("interactionCreate",async(i)=>{
+    try{
+
     if(config.guilds&&!config.guilds.includes(i.guildId)){
         // msg.guild.leave()
-        i.reply("Current host is running on a whitelist.")
+        // i.reply("Current host is running on a whitelist.")
         return
     }
     if(i.isCommand()!==true)return
     await commands[i.commandName].execute(i)
+
+        
+    }catch(err){
+        console.warn(err)
+        i.reply("Something went wrong")
+    }
 })
 
 
@@ -98,7 +119,7 @@ const refreshCommands = async ()=>{
         guildData.forEach(async(e)=>{
             i++
             let guildId = e.id
-            console.log(`Refreshing commands for guild id: ${guildId} (${i}/${len})`)
+            console.log(`Refreshing commands for guild: ${guildId} (${e.name}) (${i}/${len})`)
             const rest = new REST().setToken(token);
             await (async () => {
                 try {
@@ -116,7 +137,7 @@ const refreshCommands = async ()=>{
                     console.error(error);
                 }
             })();
-            console.log(`Done refreshing commands for guild id: ${guildId} (${i}/${len})`)
+            console.log(`Done refreshing commands for guild: ${guildId} (${e.name})  (${i}/${len})`)
 
         })
 
