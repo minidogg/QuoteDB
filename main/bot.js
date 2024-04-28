@@ -7,7 +7,6 @@ process.on('unhandledRejection', (reason, promise) => {
 
 const fs = require("fs")
 const path = require('path')
-var devs = ["880898058483814430","906283767734362144","1170452569848549429"]
 
 //add config if it doesnt exist already
 if(!fs.existsSync("./config.json")){
@@ -140,7 +139,7 @@ client.on("interactionCreate",async(i)=>{
         return
     }
     if(i.isCommand()!==true)return
-    await commands[i.commandName].execute(i)
+    await commands[i.commandName].execute(i,client)
 
         
     }catch(err){
