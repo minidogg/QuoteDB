@@ -77,19 +77,19 @@ client.on("messageCreate",async(msg)=>{
         repliedTo = await msg.channel.messages.fetch(msg.reference.messageId);
         }catch(err){
             console.warn(err)
-            await msg.editReply({ content: "You must reply to a message to quote it!",components:[deleteRow]})
+            await msg.reply({ content: "You must reply to a message to quote it!",components:[deleteRow]})
             return
         }
 
         let content = `"${repliedTo.content}" - <@${repliedTo.author.id}> ${new Date().getFullYear()}`
         let add = db.add(content,"QuoteDB",clientId,msg.guild.id)
-        await msg.editReply({ content: add,components:[deleteRow]});
+        await msg.reply({ content: add,components:[deleteRow]});
         await msg.react("✅")
         nextQuoteTime = Date.now()+5000
         msg.guild.channels.cache.find((e)=>e.name.includes("quotes")).send(content)
     }catch(err){
         console.warn(err)
-        msg.editReply("something went wrong")
+        msg.reply("something went wrong")
     }
 })
 
@@ -117,12 +117,12 @@ client.on("messageCreate",async(msg)=>{
     try{
         let add = db.add(regex.exec(msg.content)[1],msg.author.username,msg.author.id,msg.guild.id)
 
-        await msg.editReply({ content: add,components:[deleteRow]});
+        await msg.reply({ content: add,components:[deleteRow]});
         await msg.react("✅")
         nextQuoteTime = Date.now()+5000
     }catch(err){
         console.warn(err)
-        msg.editReply("Something went wrong when adding quote to DB!")
+        await msg.reply("Something went wrong when adding quote to DB!")
     }
 
   
