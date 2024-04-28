@@ -67,29 +67,29 @@ client.on("messageCreate",async(msg)=>{
     if(msg.content !== `<@${clientId}>` && msg.content!=="<@949479338275913799>")return
     try{
         if(Date.now()<=nextQuoteTime){
-            msg.reply({ content: `Please wait ${(nextQuoteTime-Date.now())/1000} more seconds before making another quote!`,components:[deleteRow]});
+            await msg.reply({ content: `Please wait ${(nextQuoteTime-Date.now())/1000} more seconds before making another quote!`,components:[deleteRow]});
             return
         }
-        msg.reply({ content: "Adding quote to DB...",components:[deleteRow]});
+        await msg.reply({ content: "Adding quote to DB...",components:[deleteRow]});
 
         let repliedTo;
         try{
         repliedTo = await msg.channel.messages.fetch(msg.reference.messageId);
         }catch(err){
             console.warn(err)
-            msg.reply({ content: "You must reply to a message to quote it!",components:[deleteRow]})
+            await msg.editReply({ content: "You must reply to a message to quote it!",components:[deleteRow]})
             return
         }
 
         let content = `"${repliedTo.content}" - <@${repliedTo.author.id}> ${new Date().getFullYear()}`
         let add = db.add(content,"QuoteDB",clientId,msg.guild.id)
-        await msg.reply({ content: add,components:[deleteRow]});
+        await msg.editReply({ content: add,components:[deleteRow]});
         await msg.react("✅")
         nextQuoteTime = Date.now()+5000
         msg.guild.channels.cache.find((e)=>e.name.includes("quotes")).send(content)
     }catch(err){
         console.warn(err)
-        msg.reply("something went wrong")
+        msg.editReply("something went wrong")
     }
 })
 
@@ -106,23 +106,23 @@ client.on("messageCreate",async(msg)=>{
     if(msg.author.bot===true)return
     if(!regex.test(msg.content))return
     if(Date.now()<=nextQuoteTime){
-        msg.reply({ content: `Please wait ${(nextQuoteTime-Date.now())/1000} more seconds before sending another quote!`,components:[deleteRow]});
+        await msg.reply({ content: `Please wait ${(nextQuoteTime-Date.now())/1000} more seconds before sending another quote!`,components:[deleteRow]});
         return
     }
     msg.reply({ content: "Adding quote to DB...",components:[deleteRow]});
     }catch(err){
         console.warn(err)
-        msg.reply("Something went wrong")
+        await msg.reply("Something went wrong")
     }
     try{
         let add = db.add(regex.exec(msg.content)[1],msg.author.username,msg.author.id,msg.guild.id)
 
-        await msg.reply({ content: add,components:[deleteRow]});
+        await msg.editReply({ content: add,components:[deleteRow]});
         await msg.react("✅")
         nextQuoteTime = Date.now()+5000
     }catch(err){
         console.warn(err)
-        msg.reply("Something went wrong when adding quote to DB!")
+        msg.editReply("Something went wrong when adding quote to DB!")
     }
 
   
