@@ -17,7 +17,7 @@ module.exports = {
          * 
          * @param {Interaction} interaction 
          */
-	async execute(interaction) {
+	async execute(interaction,client,db) {
 		await interaction.reply({embeds:[lazyEmbed({
             "title":"Github Repo",
             "message":"[Repo](https://github.com/ReallyBadDeveloper/QuoteDB)",
