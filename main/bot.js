@@ -135,7 +135,7 @@ client.on("interactionCreate", async (i) => {
             return;
         }
         if (i.isCommand() !== true) return;
-        await commands[i.commandName].execute(i, client);
+        await commands[i.commandName].execute(i, client,db);
 
     } catch (err) {
         console.warn(err);

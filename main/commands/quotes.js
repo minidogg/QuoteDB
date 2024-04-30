@@ -1,6 +1,5 @@
 const { SlashCommandBuilder,Interaction } = require('discord.js');
 const lazyEmbed = require("../lazyEmbed.js")
-const db = require("../db.js")
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -20,7 +19,7 @@ module.exports = {
          * 
          * @param {Interaction} interaction 
          */
-	async execute(interaction) {
+	async execute(interaction,client,db) {
         switch(interaction.options._subcommand){
             case("last"):
                 var quotes = db.getQuotes(interaction.guild.id).map(e=>e.quote+` (<@${e.reporterId}>)`).join("\n")

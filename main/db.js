@@ -26,10 +26,14 @@ setup()
 
 var quoteIdRegex = /".+" *- *<@(\d+)>,? *\d*/
 
-
+var dbShutdown = false
 var dbMain = getDBmain()
 setInterval(()=>{
-    setDBmain(dbMain)
+    try{
+        setDBmain(dbMain)
+    }catch(err){
+        console.warn(err)
+    }
 },5000)
 
 module.exports.createGuild = (id)=>{
@@ -44,6 +48,9 @@ module.exports.createGuild = (id)=>{
 }
 
 module.exports.add = (quote, user, userID,guildId) => {
+    if(dbShutdown){
+        return "DB Shutdown"
+    }
     try {
         if (quote.length >= 350) {
             return "Quote can't be bigger than 350 characters!";
@@ -75,6 +82,9 @@ module.exports.add = (quote, user, userID,guildId) => {
 
 //return array of quotes
 module.exports.getQuotes = function(guildId,count=20){
+    if(dbShutdown){
+        return "DB Shutdown"
+    }
     try{
         let quotes = []
         let main = JSON.parse(fs.readFileSync(gg(guildId,"db.json"),"utf-8"))
@@ -95,6 +105,9 @@ module.exports.getQuotes = function(guildId,count=20){
 
 //get quotes from a user id
 module.exports.getQuotesFrom = function(userID,cap=-1){
+    if(dbShutdown){
+        return "DB Shutdown"
+    }
     try{
         let quotes = []
         dbMain.guilds.forEach((guildId)=>{
@@ -120,6 +133,9 @@ module.exports.getQuotesFrom = function(userID,cap=-1){
 
 //get all quotes of a person
 module.exports.getQuotesOf = function(userID,cap=-1){
+    if(dbShutdown){
+        return "DB Shutdown"
+    }
     try{
         let quotes = []
         dbMain.guilds.forEach((guildId)=>{
@@ -141,4 +157,7 @@ module.exports.getQuotesOf = function(userID,cap=-1){
         console.warn(err)
         return `Something went wrong when retrieving quotes!`
     }
+}
+module.exports.shutdown = ()=>{
+    dbShutdown = true
 }

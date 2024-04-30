@@ -10,7 +10,7 @@ module.exports = {
          * 
          * @param {Interaction} interaction 
          */
-	async execute(interaction) {
+	async execute(interaction,client,db) {
         await interaction.reply({embeds:[lazyEmbed({
             "title":"Pong! :ping_pong:",
             "message":`Server has been up for ${process.uptime()} seconds.`})],
