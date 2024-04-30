@@ -84,7 +84,7 @@ client.on("messageCreate", async (msg) => {
         await msg.reply({ content: add, components: [deleteRow] });
         await msg.react("✅");
         nextQuoteTime = Date.now() + 5000;
-        msg.guild.channels.cache.find((e) => e.name.includes("quotes")).send(content.replaceAll("@everyone","@.everyone").replaceAll("@here","@.here"));
+        msg.guild.channels.cache.find((e) => e.name.includes("quotes")).send(content.replaceAll("@everyone","@‍everyone").replaceAll("@here","@‍here"));
     } catch (err) {
         console.warn(err);
         msg.reply("something went wrong");
