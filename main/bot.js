@@ -68,20 +68,20 @@ client.on("messageCreate", async (msg) => {
             await msg.reply({ content: `Please wait ${(nextQuoteTime - Date.now()) / 1000} more seconds before making another quote!`, components: [deleteRow] });
             return;
         }
-        await msg.reply({ content: "Adding quote to DB...", components: [deleteRow] });
+        // await msg.reply({ content: "Adding quote to DB...", components: [deleteRow] });
 
         let repliedTo;
         try {
             repliedTo = await msg.channel.messages.fetch(msg.reference.messageId);
         } catch (err) {
             console.warn(err);
-            await msg.reply({ content: "You must reply to a message to quote it!", components: [deleteRow] });
+            await msg.reply({ content: "You must reply to a message to quote it!", components: [deleteRow], ephemeral: true });
             return;
         }
 
         let content = `"${repliedTo.content}" - <@${repliedTo.author.id}> ${new Date().getFullYear()}`;
         let add = db.add(content, "QuoteDB", clientId, msg.guild.id);
-        await msg.reply({ content: add, components: [deleteRow] });
+        await msg.reply({ content: add, components: [deleteRow], ephemeral: true });
         await msg.react("✅");
         nextQuoteTime = Date.now() + 5000;
         msg.guild.channels.cache.find((e) => e.name.includes("quotes")).send(content.replaceAll("@everyone","@‍everyone").replaceAll("@here","@‍here"));
