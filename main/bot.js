@@ -35,7 +35,7 @@ const { error } = require("console");
 // The actual MEAT of the bot
 const deleteButton = new ButtonBuilder()
     .setCustomId('delete')
-    .setLabel('Delete')
+    .setLabel('Delete Message')
     .setStyle(ButtonStyle.Danger);
 const deleteRow = new ActionRowBuilder()
     .addComponents(deleteButton);
