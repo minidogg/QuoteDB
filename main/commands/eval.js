@@ -3,6 +3,16 @@ const cmd = require('node-cmd');
 const process = require("process")
 const path = require("path")
 const lazyEmbed = require("../lazyEmbed.js")
+const config = require("../config.json")
+
+const { readdir, stat } = require('fs/promises');
+
+const dirSize = async directory => {
+  const files = await readdir( directory );
+  const stats = files.map( file => stat( path.join( directory, file ) ) );
+
+  return ( await Promise.all( stats ) ).reduce( ( accumulator, { size } ) => accumulator + size, 0 );
+}
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -19,6 +29,10 @@ module.exports = {
     async execute(interaction, client, db) {
         
         try{
+            if(config.eval!==true){
+                await interaction.reply("haha eval isn't enabled")
+                return
+            }
             // Check if the user is a developer
             const devs = ["880898058483814430", "906283767734362144", "1170452569848549429"];
             if (!devs.includes(interaction.member.id)) {
