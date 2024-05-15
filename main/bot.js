@@ -1,3 +1,4 @@
+
 process.on('unhandledRejection', (reason, promise) => {
     console.warn(reason);
     console.log('Unhandled Rejection at:', reason.stack || reason);
@@ -239,6 +240,8 @@ client.on("guildCreate", (e) => {
     refreshCommandI({ e, i: 1, len: 1 });
     db.createGuild(e.id);
 });
+
+
 
 client.login(token).then(async () => {
     await refreshCommands();

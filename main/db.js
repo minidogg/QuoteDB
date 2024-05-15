@@ -1,5 +1,4 @@
 const fs = require("fs")
-
 const gg = (id,file="")=>"../db/"+id+"/"+file
 
 function getDBmain(){
@@ -94,7 +93,7 @@ module.exports.getQuotes = function(guildId,count=20){
             for(let i2 = file.quotes.length;i2>0;i2--){
                 if(quotes.length >= count) break;
                 if (file.quotes[i2 - 1] && file.quotes[i2 - 1].quote) {
-                    quotes.push(file.quotes[i2 - 1].quote); 
+                    quotes.push(file.quotes[i2 - 1]); 
                 }
             }
         }
@@ -149,7 +148,7 @@ module.exports.getQuotesOf = function(userID,cap=-1){
                 let file = JSON.parse(fs.readFileSync(gg(guildId,(i-1)+".json"),"utf-8"))
                 for(let i2 = file.quotes.length;i2>0;i2--){
                     if(quotes.length>=cap&&cap>0)break
-                    if(file.quotes[i2].quotedId==userID)quotes.push(file.quotes[i2])
+                    if(file.quotes[i2-1].quotedId==userID)quotes.push(file.quotes[i2-1])
                 }
             }
 
