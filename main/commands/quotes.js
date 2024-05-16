@@ -13,7 +13,7 @@ module.exports = {
         .addSubcommand(subcommand =>
             subcommand
                 .setName('last')
-                .setDescription('Gets last 100 quotes')
+                .setDescription('Gets last 20 quotes')
                 /*.addUserOption(option => option.setName('user').setDescription('The user id/mention'))*/),
     /**
      * 
@@ -23,9 +23,9 @@ module.exports = {
         try {
             switch (interaction.options._subcommand) {
                 case ("last"):
-                    var quotes = db.getQuotes(interaction.guild.id,100).map(e => e.quote + ` (<@${e.reporterId}>)`).join("\n")
+                    var quotes = db.getQuotes(interaction.guild.id,20).map(e => e.quote + ` (<@${e.reporterId}>)`).join("\n")
 
-                    await interaction.reply({ embeds: [lazyEmbed({ "title": "Quotes", "message": `Last 100 quotes: \n\n${quotes}` })], ephemeral:
+                    await interaction.reply({ embeds: [lazyEmbed({ "title": "Quotes", "message": `Last 20 quotes: \n\n${quotes}` })], ephemeral:
                         !(interaction.channel.name.includes("command") || interaction.channel.name.includes("bot"))
                     });
                     break;
@@ -35,9 +35,9 @@ module.exports = {
                         interaction.reply("Invalid user/userID!")
                         return;
                     }
-                    var quotes = db.getQuotesOf(id,100).map(e => e.quote + ` (<@${e.reporterId}> )`).join("\n")
+                    var quotes = db.getQuotesOf(id,20).map(e => e.quote + ` (<@${e.reporterId}> )`).join("\n")
 
-                    await interaction.reply({ embeds: [lazyEmbed({ "title": "Quotes", "message": `Last 100 quotes: \n\n${quotes}` })], ephemeral:
+                    await interaction.reply({ embeds: [lazyEmbed({ "title": "Quotes", "message": `Last 20 quotes: \n\n${quotes}` })], ephemeral:
                         !(interaction.channel.name.includes("command") || interaction.channel.name.includes("bot"))
                     });
                     break;
