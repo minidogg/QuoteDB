@@ -23,13 +23,14 @@ if (!fs.existsSync("./config.json")) {
 }
 let configDatTemp123AbcDefg = JSON.parse(fs.readFileSync("./config.json","utf-8"))
 if(!configDatTemp123AbcDefg.maxFetch){
-    configDatTemp123AbcDefg.maxFetch = 30
+    configDatTemp123AbcDefg.maxFetch = 100
     fs.writeFileSync("./config.json",JSON.stringify(configDatTemp123AbcDefg,null,"  "),"utf-8")
 }
 
 // Require the necessary discord.js classes
 const { Client, Events, GatewayIntentBits, ButtonBuilder, ActionRowBuilder, ButtonStyle, REST, Routes } = require('discord.js');
 const { token, clientId } = require('./config.json');
+const { maxFetch } = require('./config.json');
 const config = require("./config.json");
 const added = typeof (config.host) === "string" && config.host !== " " ? ` (Being hosted by ${config.host})` : "";
 const express = require("./express/index.js");
