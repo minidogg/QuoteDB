@@ -80,7 +80,7 @@ module.exports.add = (quote, user, userID,guildId) => {
 
 
 //return array of quotes
-module.exports.getQuotes = function(guildId,count=20){
+module.exports.getQuotes = function(guildId,count=100){
     if(dbShutdown){
         return "DB Shutdown"
     }
