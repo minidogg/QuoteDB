@@ -1,5 +1,6 @@
 const fs = require("fs")
 const gg = (id,file="")=>"../db/"+id+"/"+file
+const { maxFetch } = require('./config.json');
 
 function getDBmain(){
     return JSON.parse(fs.readFileSync("../db/db.json","utf-8"))
@@ -60,7 +61,7 @@ module.exports.add = (quote, user, userID,guildId) => {
         let main = JSON.parse(fs.readFileSync(gg(guildId,"db.json"),"utf-8"))
         let i = main.files
         let file = JSON.parse(fs.readFileSync(gg(guildId,(i-1)+".json"),"utf-8"))
-        if(file.quotes.length>=50){
+        if(file.quotes.length>=Math.max(50,maxFetch)){
             main.files+=1
             i+=1
             file = {"quotes":[]}
@@ -80,12 +81,13 @@ module.exports.add = (quote, user, userID,guildId) => {
 
 
 //return array of quotes
-module.exports.getQuotes = function(guildId,count=100){
+module.exports.getQuotes = function(guildId,count=100,maxChar=3250){
     if(dbShutdown){
         return "DB Shutdown"
     }
     try{
         let quotes = []
+        let len = 0
         let main = JSON.parse(fs.readFileSync(gg(guildId,"db.json"),"utf-8"))
         for(let i = main.files;i>0;i--){
             if(quotes.length >= count) break;
@@ -93,7 +95,9 @@ module.exports.getQuotes = function(guildId,count=100){
             for(let i2 = file.quotes.length;i2>0;i2--){
                 if(quotes.length >= count) break;
                 if (file.quotes[i2 - 1] && file.quotes[i2 - 1].quote) {
+                    if(file.quotes[i2 - 1].quote.length+len>maxChar)break
                     quotes.push(file.quotes[i2 - 1]); 
+                    len += file.quotes[i2 - 1].quote.length
                 }
             }
         }
@@ -106,12 +110,13 @@ module.exports.getQuotes = function(guildId,count=100){
 
 
 //get quotes from a user id
-module.exports.getQuotesFrom = function(userID,cap=-1){
+module.exports.getQuotesFrom = function(userID,cap=-1,maxChar=3000){
     if(dbShutdown){
         return "DB Shutdown"
     }
     try{
         let quotes = []
+        let len = 0
         dbMain.guilds.forEach((guildId)=>{
             let main = JSON.parse(fs.readFileSync(gg(guildId,"db.json"),"utf-8"))
 
@@ -120,7 +125,11 @@ module.exports.getQuotesFrom = function(userID,cap=-1){
                 let file = JSON.parse(fs.readFileSync(gg(guildId,(i-1)+".json"),"utf-8"))
                 for(let i2 = 0;i2<file.quotes.length;i2++){
                     if(quotes.length>=cap&&cap>0)break
-                    if(file.quotes[i2].reporterId==userID)quotes.push(file.quotes[i2])
+                    if(file.quotes[i2].reporterId==userID){
+                        if(file.quotes[i2].quote.length+len>maxChar)break
+                        quotes.push(file.quotes[i2])
+                        len += file.quotes[i2].quote.length
+                    }
                 }
             }
 
@@ -134,12 +143,13 @@ module.exports.getQuotesFrom = function(userID,cap=-1){
 }
 
 //get all quotes of a person
-module.exports.getQuotesOf = function(userID,cap=-1){
+module.exports.getQuotesOf = function(userID,cap=-1,maxChar=3200){
     if(dbShutdown){
         return "DB Shutdown"
     }
     try{
         let quotes = []
+        let len = 0
         dbMain.guilds.forEach((guildId)=>{
             let main = JSON.parse(fs.readFileSync(gg(guildId,"db.json"),"utf-8"))
 

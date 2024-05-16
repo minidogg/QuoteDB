@@ -1,19 +1,21 @@
 const { SlashCommandBuilder, Interaction } = require('discord.js');
 const lazyEmbed = require("../lazyEmbed.js");
 
+const { maxFetch } = require('../config.json');
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('quotes')
-        .setDescription('Replies with last 20 quotes.')
+        .setDescription(`Replies with last ${maxFetch} quotes.`)
         .addSubcommand(subcommand =>
             subcommand
                 .setName('user')
-                .setDescription('Get quotes from a specific user.')
+                .setDescription(`Gets last ${maxFetch} quotes from a specific user.`)
                 .addUserOption(option => option.setName('user').setDescription('The user id/mention').setRequired(true)))
         .addSubcommand(subcommand =>
             subcommand
                 .setName('last')
-                .setDescription('Gets last 20 quotes')
+                .setDescription(`Gets last ${maxFetch} quotes`)
                 /*.addUserOption(option => option.setName('user').setDescription('The user id/mention'))*/),
     /**
      * 
@@ -23,9 +25,9 @@ module.exports = {
         try {
             switch (interaction.options._subcommand) {
                 case ("last"):
-                    var quotes = db.getQuotes(interaction.guild.id,20).map(e => e.quote + ` (<@${e.reporterId}>)`).join("\n")
+                    var quotes = db.getQuotes(interaction.guild.id,maxFetch).map(e => e.quote).join("\n")
 
-                    await interaction.reply({ embeds: [lazyEmbed({ "title": "Quotes", "message": `Last 20 quotes: \n\n${quotes}` })], ephemeral:
+                    await interaction.reply({ embeds: [lazyEmbed({ "title": "Quotes", "message": `Last ${maxFetch} fetchable quotes: \n\n${quotes}` })], ephemeral:
                         !(interaction.channel.name.includes("command") || interaction.channel.name.includes("bot"))
                     });
                     break;
@@ -35,9 +37,9 @@ module.exports = {
                         interaction.reply("Invalid user/userID!")
                         return;
                     }
-                    var quotes = db.getQuotesOf(id,20).map(e => e.quote + ` (<@${e.reporterId}> )`).join("\n")
+                    var quotes = db.getQuotesOf(id,maxFetch).map(e => e.quote).join("\n")
 
-                    await interaction.reply({ embeds: [lazyEmbed({ "title": "Quotes", "message": `Last 20 quotes: \n\n${quotes}` })], ephemeral:
+                    await interaction.reply({ embeds: [lazyEmbed({ "title": "Quotes", "message": `Last ${maxFetch} fetchable quotes: \n\n${quotes}` })], ephemeral:
                         !(interaction.channel.name.includes("command") || interaction.channel.name.includes("bot"))
                     });
                     break;

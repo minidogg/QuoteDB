@@ -16,9 +16,15 @@ if (!fs.existsSync("./config.json")) {
     "token":"Your bot token",
     "clientId":"The user id of your bot.",
     "host":"username or some identifier. or you can just make this a blank string.",
-    "port":"3000"
+    "port":"3000",
+    "maxFetch":"20"
 }
 `, "utf-8");
+}
+let configDatTemp123AbcDefg = JSON.parse(fs.readFileSync("./config.json","utf-8"))
+if(!configDatTemp123AbcDefg.maxFetch){
+    configDatTemp123AbcDefg.maxFetch = 30
+    fs.writeFileSync("./config.json",JSON.stringify(configDatTemp123AbcDefg,null,"  "),"utf-8")
 }
 
 // Require the necessary discord.js classes
