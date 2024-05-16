@@ -1,17 +1,42 @@
 ![QuoteDB logo](media/quotedblogo.png)
-\
-A database for storing all your quotes.
 
+**QuoteDB:** A database for all your quotes.
 
-# Running
-1. Get [node.js](https://nodejs.org/en/download)
-2. run `cd ./main`
-3. run `npm ci`
-4. node bot.js
-5. edit the config that is generated.
-6. run `node bot.js` or `npm run bot` if you have nodemon  
-### OR  
-6. run `npm install pm2@latest -g` if you don't have pm2 already
-7. run `npm run prod`
-- To stop it run `npm run prodStop`
-- To see logs run `npm run prodLogs`
+## Getting Started
+1. **Install Node.js**: If you haven't already, download and install [Node.js](https://nodejs.org/en/download).
+2. **Navigate to Directory**: Open your terminal and navigate to the 'main' directory of QuoteDB.
+    ```bash
+    cd ./main
+    ```
+3. **Install Dependencies**: Run the following command to install required dependencies.
+    ```bash
+    npm ci
+    ```
+4. **Configure**: Edit the configuration file generated to suit your preferences.
+5. **Start the Bot**:
+    - Run the following command:
+      ```bash
+      node bot.js
+      ```
+    - Or, if you have nodemon installed:
+      ```bash
+      npm run bot
+      ```
+
+### Running in Production
+1. **Install PM2**: If you don't have PM2 installed, you can do so by running:
+    ```bash
+    npm install pm2@latest -g
+    ```
+2. **Start Production Mode**:
+    ```bash
+    npm run prod
+    ```
+3. **Stopping the Bot**:
+    ```bash
+    npm run prodStop
+    ```
+4. **Viewing Logs**:
+    ```bash
+    npm run prodLogs
+    ```
