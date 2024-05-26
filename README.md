@@ -1,6 +1,7 @@
 ![QuoteDB logo](media/quotedblogo.png)
 
 **QuoteDB:** A database for all your quotes.
+You can find an invite link to it in (our discord server)[https://disboard.org/server/1234184478335828012]
 
 ## Getting Started
 1. **Install Node.js**: If you haven't already, download and install [Node.js](https://nodejs.org/en/download).
