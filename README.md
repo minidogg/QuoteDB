@@ -1,3 +1,8 @@
+# WARNING: QuoteDB has been moved [here](https://github.com/minidogg/QuoteDB).
+This repository is no longer maintained and will most likely stop working with new discord.js versions.
+\
+For an up-to-date version, go to [UnluckyCrafter's fork](https://github.com/minidogg/QuoteDB).
+
 ![QuoteDB logo](media/quotedblogo.png)
 
 **QuoteDB:** A database for all your quotes.
