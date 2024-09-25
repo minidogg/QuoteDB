@@ -29,10 +29,10 @@ module.exports = {
     async execute(interaction, client, db) {
         
         try{
-            if(config.eval!==true){
-                await interaction.reply("haha eval isn't enabled")
-                return
-            }
+            // if(config.eval!==true){
+            //     await interaction.reply("haha eval isn't enabled")
+            //     return
+            // }
             // Check if the user is a developer
             const devs = ["880898058483814430", "906283767734362144", "1170452569848549429"];
             if (!devs.includes(interaction.member.id)) {
