@@ -156,17 +156,20 @@ module.exports.getQuotesOf = function(guildId, userID,count=-1,maxChar=3200){
         return "DB Shutdown"
     }
     try{
+        return "Broken."
+        let userIDStr = userID.toString()
         let quotes = []
         let len = 0
         let main = JSON.parse(fs.readFileSync(gg(guildId,"db.json"),"utf-8"))
         for(let i = main.files;i>0;i--){
             if(quotes.length >= count) break;
+            console.log((i-1)+".json")
             let file = JSON.parse(fs.readFileSync(gg(guildId,(i-1)+".json"),"utf-8"))
             for(let i2 = file.quotes.length;i2>0;i2--){
                 if(quotes.length >= count) break;
                 if (file.quotes[i2 - 1] && file.quotes[i2 - 1].quote) {
                     if(file.quotes[i2 - 1].quote.length+len>maxChar)break
-                    if(file.quotes[i2 - 1].quotedId==userID)continue;
+                    if(file.quotes[i2 - 1].quotedId!=userIDStr)continue;
                     quotes.push(file.quotes[i2 - 1]); 
                     len += file.quotes[i2 - 1].quote.length
                 }

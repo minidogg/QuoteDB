@@ -35,7 +35,12 @@ module.exports = {
                         interaction.reply("Invalid user/userID!");
                         return;
                     }
-                    quotes = db.getQuotesOf(interaction.guild.id, userId, maxFetch).map(e => e.quote);
+                    quotes = db.getQuotesOf(interaction.guild.id, userId, maxFetch)
+                    if(typeof(quotes)=="string"){
+                        interaction.reply(quotes);
+                        return;
+                    }
+                    quotes = quotes.map(e => e.quote);
                     userSpecified = true;
                     break;
                 default:
