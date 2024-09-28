@@ -151,28 +151,45 @@ module.exports.getQuotesFrom = function(userID,cap=-1,maxChar=3000){
 }
 
 //get all quotes of a person
-module.exports.getQuotesOf = function(userID,cap=-1,maxChar=3200){
+module.exports.getQuotesOf = function(guildId, userID,count=-1,maxChar=3200){
     if(dbShutdown){
         return "DB Shutdown"
     }
     try{
         let quotes = []
         let len = 0
-        dbGuilds.forEach((guildId)=>{
-            let main = JSON.parse(fs.readFileSync(gg(guildId,"db.json"),"utf-8"))
-
-            for(let i = main.files;i>0;i--){
-                if(quotes.length>=cap&&cap>0)break
-                let file = JSON.parse(fs.readFileSync(gg(guildId,(i-1)+".json"),"utf-8"))
-                for(let i2 = file.quotes.length;i2>0;i2--){
-                    if(quotes.length>=cap&&cap>0)break
-                    if(file.quotes[i2-1].quotedId==userID)quotes.push(file.quotes[i2-1])
+        let main = JSON.parse(fs.readFileSync(gg(guildId,"db.json"),"utf-8"))
+        for(let i = main.files;i>0;i--){
+            if(quotes.length >= count) break;
+            let file = JSON.parse(fs.readFileSync(gg(guildId,(i-1)+".json"),"utf-8"))
+            for(let i2 = file.quotes.length;i2>0;i2--){
+                if(quotes.length >= count) break;
+                if (file.quotes[i2 - 1] && file.quotes[i2 - 1].quote) {
+                    if(file.quotes[i2 - 1].quote.length+len>maxChar)break
+                    if(file.quotes[i2 - 1].quotedId==userID)continue;
+                    quotes.push(file.quotes[i2 - 1]); 
+                    len += file.quotes[i2 - 1].quote.length
                 }
             }
-
-        })   
-
+        }
         return quotes
+
+        // let quotes = []
+        // let len = 0
+        // dbGuilds.forEach((guildId)=>{
+        //     let main = JSON.parse(fs.readFileSync(gg(guildId,"db.json"),"utf-8"))
+
+        //     for(let i = main.files;i>0;i--){
+        //         if(quotes.length>=cap&&cap>0)break
+        //         let file = JSON.parse(fs.readFileSync(gg(guildId,(i-1)+".json"),"utf-8"))
+        //         for(let i2 = file.quotes.length;i2>0;i2--){
+        //             if(quotes.length>=cap&&cap>0)break
+        //             if(file.quotes[i2-1].quotedId==userID)quotes.push(file.quotes[i2-1])
+        //         }
+        //     }
+
+        // })   
+        // return quotes;
     }catch(err){
         console.log("aaa")
         console.warn(err)
