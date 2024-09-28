@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path")
+const readline = require('readline');
 
 // Utility function for making directories if they don't already exist
 function TryMakeDir(dirPath){
@@ -27,11 +28,31 @@ function TryAddGuild(guildId, content = ""){
 module.exports.createGuild = TryAddGuild
 TryAddGuild("0")
 
-// db.add(regex.exec(msg.content)[1], msg.author.id, msg.guild.id);
-function AddQuote(contents, authorId, reporterId, guildId){
+// Count New Lines Function
+async function CountNewLines(filePath) {
+    const fileStream = fs.createReadStream(filePath);
+
+    const rl = readline.createInterface({
+        input: fileStream,
+        crlfDelay: Infinity
+    });
+
+    let lineCount = 0;
+
+    for await (const line of rl) {
+        lineCount++;
+    }
+
+    return lineCount;
+}
+
+async function AddQuote(contents, authorId, reporterId, guildId){
     if(authorId.toString().length>20)return "Invalid user ID"
     console.log(contents, authorId, reporterId, guildId)
-    TryAddUser(authorId, guildId+";"+Date.now()+";"+reporterId+";"+contents+";")
+    TryAddUser(authorId, guildId+";"+Date.now()+";"+reporterId+";"+contents+";\n")
+    let quoteId = await CountNewLines(path.join(usersPath, authorId+".qdb"))
+    console.log(quoteId)
+
 
     // TODO: Change this to be the bot's emoji id thing.
     return "Success! <:quotedb:1289691354749993082>"

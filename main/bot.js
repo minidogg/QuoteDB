@@ -87,7 +87,7 @@ client.on("messageCreate", async (msg) => {
             return;
         }
 
-        let add = db.add(repliedTo.content, repliedTo.author.id, clientId, msg.guild.id);
+        let add = await db.add(repliedTo.content, repliedTo.author.id, clientId, msg.guild.id);
         await msg.reply({ content: add, components: [deleteRow], ephemeral: true });
         await msg.react("✅");
         nextQuoteTime = Date.now() + 5000;
@@ -124,7 +124,7 @@ client.on("messageCreate", async (msg) => {
     }
     try {
         let matched = regex.exec(msg.content)
-        let add = db.add(matched[1], matched[2], msg.author.id, msg.guild.id);
+        let add = await db.add(matched[1], matched[2], msg.author.id, msg.guild.id);
 
         await msg.reply({ content: add, components: [deleteRow] });
         await msg.react("✅");
