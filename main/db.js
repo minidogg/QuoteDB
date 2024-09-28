@@ -31,7 +31,7 @@ TryAddGuild("0")
 function AddQuote(contents, authorId, reporterId, guildId){
     if(authorId.toString().length>20)return "Invalid user ID"
     console.log(contents, authorId, reporterId, guildId)
-    TryAddUser(authorId, guildId+";"+Date.now()+";"+reporterId+";"+contents)
+    TryAddUser(authorId, guildId+";"+Date.now()+";"+reporterId+";"+contents+";")
 
     // TODO: Change this to be the bot's emoji id thing.
     return "Success! <:quotedb:1289691354749993082>"
