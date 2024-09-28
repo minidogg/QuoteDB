@@ -16,12 +16,13 @@ TryMakeDir(guildsPath)
 
 // Try add user function to make sure a user exists
 function TryAddUser(userId){
-    fs.appendFileSync(path.join(usersPath, userId+".txt"), "")
+    fs.appendFileSync(path.join(usersPath, userId+".qdb"), "")
 }
 TryAddUser("0")
 
 // Try add guild function to make sure a guild exists
 function TryAddGuild(guildId){
-    fs.appendFileSync(path.join(guildsPath, guildId+".txt"), "")
+    fs.appendFileSync(path.join(guildsPath, guildId+".qdb"), "")
 }
 TryAddUser("0")
+
