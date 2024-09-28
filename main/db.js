@@ -15,8 +15,8 @@ const guildsPath = path.join(dbPath, "guilds")
 TryMakeDir(guildsPath)
 
 // Try add user function to make sure a user exists
-function TryAddUser(userId){
-    fs.appendFileSync(path.join(usersPath, userId+".qdb"), "")
+function TryAddUser(userId, content = ""){
+    fs.appendFileSync(path.join(usersPath, userId+".qdb"), content)
 }
 TryAddUser("0")
 
@@ -29,7 +29,11 @@ TryAddGuild("0")
 
 // db.add(regex.exec(msg.content)[1], msg.author.id, msg.guild.id);
 function AddQuote(contents, authorId, reporterId, guildId){
+    if(authorId.toString().length>20)return "Invalid user ID"
     console.log(contents, authorId, reporterId, guildId)
-    return "Success"
+    TryAddUser(authorId, guildId+";"+Date.now()+";"+reporterId+";"+contents)
+
+    // TODO: Change this to be the bot's emoji id thing.
+    return "Success! <:quotedb:1289691354749993082>"
 }
 module.exports.add = AddQuote;
