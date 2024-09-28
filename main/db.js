@@ -24,5 +24,5 @@ TryAddUser("0")
 function TryAddGuild(guildId){
     fs.appendFileSync(path.join(guildsPath, guildId+".qdb"), "")
 }
-TryAddUser("0")
+TryAddGuild("0")
 
