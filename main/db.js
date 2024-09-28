@@ -16,25 +16,33 @@ function setup(){
     if(!fs.existsSync("../db/db.json")){
         fs.writeFileSync("../db/db.json",JSON.stringify({'guilds':[]}),"utf-8")
     }
-    let db = getDBmain()
-    if(typeof(db.guilds)==="undefined"){
-        db.guilds = []
-        setDBmain(db)
-    }
+    // let db = getDBmain()
+    // if(typeof(db.guilds)==="undefined"){
+    //     db.guilds = []
+    //     setDBmain(db)
+    // }
 }
 setup()
 
 var quoteIdRegex = /".+" *- *<@(\d+)>,? *\d*/
 
 var dbShutdown = false
-var dbMain = getDBmain()
-setInterval(()=>{
-    try{
-        setDBmain(dbMain)
-    }catch(err){
-        console.warn(err)
-    }
-},5000)
+// var dbMain = getDBmain()
+
+// setInterval(()=>{
+//     try{
+//         setDBmain(dbMain)
+//     }catch(err){
+//         console.warn(err)
+//     }
+// },5000)
+
+let dbGuilds = []
+function updateDbGuilds(){
+    dbGuilds = fs.readdirSync("../db/").filter(e=>!e.endsWith(".json"))
+}
+module.exports.updateDbGuilds = updateDbGuilds;
+updateDbGuilds()
 
 module.exports.createGuild = (id)=>{
     if(!fs.existsSync("../db/"+id)){
@@ -42,9 +50,9 @@ module.exports.createGuild = (id)=>{
         fs.writeFileSync("../db/"+id+"/db.json",JSON.stringify({files:1}))
         fs.writeFileSync("../db/"+id+"/0.json",JSON.stringify({quotes:[]}))
     }
-    if(!dbMain.guilds.find(e=>e==id)){
-        dbMain.guilds.push(id)
-    }
+    // if(!dbMain.guilds.find(e=>e==id)){
+    //     dbMain.guilds.push(id)
+    // }
 }
 
 module.exports.add = (quote, user, userID,guildId) => {
@@ -117,7 +125,7 @@ module.exports.getQuotesFrom = function(userID,cap=-1,maxChar=3000){
     try{
         let quotes = []
         let len = 0
-        dbMain.guilds.forEach((guildId)=>{
+        dbGuilds.forEach((guildId)=>{
             let main = JSON.parse(fs.readFileSync(gg(guildId,"db.json"),"utf-8"))
 
             for(let i = main.files;i>0;i--){
@@ -150,7 +158,7 @@ module.exports.getQuotesOf = function(userID,cap=-1,maxChar=3200){
     try{
         let quotes = []
         let len = 0
-        dbMain.guilds.forEach((guildId)=>{
+        dbGuilds.forEach((guildId)=>{
             let main = JSON.parse(fs.readFileSync(gg(guildId,"db.json"),"utf-8"))
 
             for(let i = main.files;i>0;i--){
@@ -166,6 +174,7 @@ module.exports.getQuotesOf = function(userID,cap=-1,maxChar=3200){
 
         return quotes
     }catch(err){
+        console.log("aaa")
         console.warn(err)
         return `Something went wrong when retrieving quotes!`
     }
