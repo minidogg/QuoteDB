@@ -47,14 +47,19 @@ async function CountNewLines(filePath) {
 }
 
 async function AddQuote(contents, authorId, reporterId, guildId){
-    if(authorId.toString().length>20)return "Invalid user ID"
-    console.log(contents, authorId, reporterId, guildId)
+    // Validate the author ID length
+    if(authorId.toString().length>20)return "Invalid user ID length"
+
+    // Add the quote
     TryAddUser(authorId, guildId+";"+Date.now()+";"+reporterId+";"+contents+";\n")
-    let quoteId = await CountNewLines(path.join(usersPath, authorId+".qdb"))
-    console.log(quoteId)
 
+    // Get the quote's line id
+    let lineId = (await CountNewLines(path.join(usersPath, authorId+".qdb")))-1
 
-    // TODO: Change this to be the bot's emoji id thing.
+    // Add the quote to the guild.
+    TryAddGuild(guildId, authorId+";"+lineId+";\n")
+
+    // TODO: Change this to be the bot's emoji id thing once its made.
     return "Success! <:quotedb:1289691354749993082>"
 }
 module.exports.add = AddQuote;
