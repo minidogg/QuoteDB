@@ -29,6 +29,6 @@ TryAddGuild("0")
 
 // db.add(regex.exec(msg.content)[1], msg.author.id, msg.guild.id);
 function AddQuote(contents, authorId, reporterId, guildId){
-
+    console.log(contents, authorId, reporterId, guildId)
 }
 module.exports.add = AddQuote;
