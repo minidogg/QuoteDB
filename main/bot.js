@@ -88,7 +88,7 @@ client.on("messageCreate", async (msg) => {
         }
 
         let content = `"${repliedTo.content}" - <@${repliedTo.author.id}> ${new Date().getFullYear()}`;
-        let add = db.add(content, "QuoteDB", clientId, msg.guild.id);
+        let add = db.add(content, clientId, msg.guild.id);
         await msg.reply({ content: add, components: [deleteRow], ephemeral: true });
         await msg.react("✅");
         nextQuoteTime = Date.now() + 5000;
@@ -99,7 +99,7 @@ client.on("messageCreate", async (msg) => {
     }
 });
 
-var regex = /(".+" *- *<@\d+>,? *\d*)/;
+var regex = /"(.+)" *- *<@\d+>,? *\d*/;
 client.on("messageCreate", async (msg) => {
     try {
         if (config.guilds && !config.guilds.includes(msg.guildId) && !config.whitelist) {
@@ -122,7 +122,7 @@ client.on("messageCreate", async (msg) => {
         await msg.reply("Something went wrong");
     }
     try {
-        let add = db.add(regex.exec(msg.content)[1], msg.author.username, msg.author.id, msg.guild.id);
+        let add = db.add(regex.exec(msg.content)[1], msg.author.id, msg.guild.id);
 
         await msg.reply({ content: add, components: [deleteRow] });
         await msg.react("✅");

@@ -24,5 +24,6 @@ TryAddUser("0")
 function TryAddGuild(guildId){
     fs.appendFileSync(path.join(guildsPath, guildId+".qdb"), "")
 }
+module.exports.createGuild = TryAddGuild
 TryAddGuild("0")
 
