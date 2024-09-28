@@ -21,8 +21,8 @@ function TryAddUser(userId, content = ""){
 TryAddUser("0")
 
 // Try add guild function to make sure a guild exists
-function TryAddGuild(guildId){
-    fs.appendFileSync(path.join(guildsPath, guildId+".qdb"), "")
+function TryAddGuild(guildId, content = ""){
+    fs.appendFileSync(path.join(guildsPath, guildId+".qdb"), content)
 }
 module.exports.createGuild = TryAddGuild
 TryAddGuild("0")

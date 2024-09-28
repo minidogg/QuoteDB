@@ -17,7 +17,6 @@
   "dependencies": {
     "discord.js": "^14.14.1",
     "express": "^4.19.2",
-    "fs-reverse": "^0.0.3",
     "node-cmd": "^5.0.0"
   },
   "type": "commonjs"
