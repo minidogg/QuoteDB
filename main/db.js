@@ -8,7 +8,7 @@ function TryMakeDir(dirPath){
 }
 
 // Setup the folder structure
-const dbPath = path.resolve("../db")
+const dbPath = path.resolve("../db2")
 TryMakeDir(dbPath)
 const usersPath = path.join(dbPath, "users")
 TryMakeDir(usersPath)
@@ -28,8 +28,33 @@ function TryAddGuild(guildId, content = ""){
 module.exports.createGuild = TryAddGuild
 TryAddGuild("0")
 
+// Cache variables
+let cacheTransactionsInProgress = []
+let lineCountCache = {};
+
+// Clear Cache Occasionally
+function ClearCacheLoop(){
+    if(cacheTransactionsInProgress.length!=0){
+        setTimeout(ClearCacheLoop, 5000)
+        return;
+    }
+    lineCountCache = {}
+    
+    setTimeout(ClearCacheLoop, 60000)
+}
+ClearCacheLoop()
+
 // Count New Lines Function
-async function CountNewLines(filePath) {
+async function CountNewLines(filePath, cacheTime=0) {
+    cacheTransactionsInProgress.push(true)
+    if(typeof(lineCountCache[filePath])!="undefined" && lineCountCache[filePath][1]>Date.now()){
+        let count = lineCountCache[0];
+        cacheTransactionsInProgress.pop();
+
+        return count;
+    }
+    cacheTransactionsInProgress.pop();
+    console.time("countLines")
     const fileStream = fs.createReadStream(filePath);
 
     const rl = readline.createInterface({
@@ -43,6 +68,10 @@ async function CountNewLines(filePath) {
         lineCount++;
     }
 
+    if(cacheTime!=0)lineCountCache[filePath] = [lineCount, Date.now(+cacheTime)]
+    console.timeEnd("countLines")
+    console.log(lineCount)
+
     return lineCount;
 }
 
@@ -54,7 +83,7 @@ async function AddQuote(contents, authorId, reporterId, guildId){
     TryAddUser(authorId, guildId+";"+Date.now()+";"+reporterId+";"+contents+";\n")
 
     // Get the quote's line id
-    let lineId = (await CountNewLines(path.join(usersPath, authorId+".qdb")))-1
+    let lineId = (await CountNewLines(path.join(usersPath, authorId+".qdb"), 10000))-1
 
     // Add the quote to the guild.
     TryAddGuild(guildId, authorId+";"+lineId+";\n")
@@ -65,5 +94,6 @@ async function AddQuote(contents, authorId, reporterId, guildId){
 module.exports.add = AddQuote;
 
 async function GetGuildQuotes(guildId, maxFetch){
-
+    const guildIdPath = path.join(guildsPath, guildId+".qdb")
+    // let lines = 
 }
