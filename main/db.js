@@ -63,3 +63,7 @@ async function AddQuote(contents, authorId, reporterId, guildId){
     return "Success! <:quotedb:1289691354749993082>"
 }
 module.exports.add = AddQuote;
+
+async function GetGuildQuotes(guildId, maxFetch){
+
+}
