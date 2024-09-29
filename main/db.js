@@ -15,19 +15,6 @@ TryMakeDir(usersPath)
 const guildsPath = path.join(dbPath, "guilds")
 TryMakeDir(guildsPath)
 
-// Try add user function to make sure a user exists
-function TryAddUser(userId, content = ""){
-    fs.appendFileSync(path.join(usersPath, userId+".qdb"), content)
-}
-TryAddUser("0")
-
-// Try add guild function to make sure a guild exists
-function TryAddGuild(guildId, content = ""){
-    fs.appendFileSync(path.join(guildsPath, guildId+".qdb"), content)
-}
-module.exports.createGuild = TryAddGuild
-TryAddGuild("0")
-
 // Cache variables
 let cacheTransactionsInProgress = []
 let lineCountCache = {};
@@ -44,10 +31,24 @@ function ClearCacheLoop(){
 }
 ClearCacheLoop()
 
+// Try add user function to make sure a user exists
+function TryAddUser(userId, content = ""){
+    fs.appendFileSync(path.join(usersPath, userId+".qdb"), content)
+}
+TryAddUser("0")
+
+// Try add guild function to make sure a guild exists
+function TryAddGuild(guildId, content = ""){
+    fs.appendFileSync(path.join(guildsPath, guildId+".qdb"), content)
+    if(typeof(lineCountCache[guildId])!="undefined") lineCountCache[0]+=1
+}
+module.exports.createGuild = TryAddGuild
+TryAddGuild("0")
+
 // Count New Lines Function
 async function CountNewLines(filePath, cacheTime=0) {
     cacheTransactionsInProgress.push(true)
-    if(typeof(lineCountCache[filePath])!="undefined" && lineCountCache[filePath][1]>Date.now()){
+    if(cacheTime!=0 && typeof(lineCountCache[filePath])!="undefined" && lineCountCache[filePath][1]>Date.now()){
         let count = lineCountCache[0];
         cacheTransactionsInProgress.pop();
 
@@ -83,7 +84,7 @@ async function AddQuote(contents, authorId, reporterId, guildId){
     TryAddUser(authorId, guildId+";"+Date.now()+";"+reporterId+";"+contents+";\n")
 
     // Get the quote's line id
-    let lineId = (await CountNewLines(path.join(usersPath, authorId+".qdb"), 10000))-1
+    let lineId = (await CountNewLines(path.join(usersPath, authorId+".qdb"), 1000*60*3))-1
 
     // Add the quote to the guild.
     TryAddGuild(guildId, authorId+";"+lineId+";\n")
@@ -95,5 +96,7 @@ module.exports.add = AddQuote;
 
 async function GetGuildQuotes(guildId, maxFetch){
     const guildIdPath = path.join(guildsPath, guildId+".qdb")
-    // let lines = 
+    let lines = await CountNewLines(guildIdPath, 1000*60*10)
+
+
 }
